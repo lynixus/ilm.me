@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ilm.me – Identité visuelle</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Source+Serif+4:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap">
+<style>
+:root{--e50:#EEF7F3;--e100:#D6EDE3;--e200:#AEDAC8;--e300:#80C3A9;--e400:#52A98A;--e500:#2F8F70;--e600:#1F7A5E;--e700:#19634D;--e800:#154F3F;--e900:#103C31;
+--ink:#16231E;--ink2:#55655F;--ink3:#7A8A84;--line:#DCE5E0;--surf:#F7F9F8;--surf2:#EEF3F0;
+--ok:#276B2A;--okbg:#E8F4E8;--err:#C0392B;--errbg:#FCEBE9;--warn:#8A5A00;--warnbg:#FFF3D6;--info:#1F5FA8;--infobg:#E6EFFA;--care:#6B4FA0;--carebg:#F0EBF8;--gold:#7A5810;--goldbg:#FBF1D8;--goldline:#E6CF93;
+--sh1:0 1px 2px rgba(16,60,49,.06),0 1px 1px rgba(16,60,49,.04);--sh2:0 2px 8px rgba(16,60,49,.08),0 1px 2px rgba(16,60,49,.05);--sh3:0 8px 24px rgba(16,60,49,.10),0 2px 6px rgba(16,60,49,.06);--sh4:0 20px 48px rgba(16,60,49,.16),0 4px 12px rgba(16,60,49,.08);
+--ring:0 0 0 3px #fff,0 0 0 5px #1F7A5E;
+--pg:#fff;--fg:#16231E;--fg2:#55655F;--pl:#DCE5E0;--ps:#F7F9F8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--pg:#0E1714;--fg:#E8F0EC;--fg2:#A3B3AC;--pl:#26352F;--ps:#15211D}}
+:root[data-theme="dark"]{--pg:#0E1714;--fg:#E8F0EC;--fg2:#A3B3AC;--pl:#26352F;--ps:#15211D}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--pg);color:var(--fg);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:32px 20px 80px}
+section{margin-top:64px}h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em}
+h1{font-size:clamp(40px,8vw,72px);line-height:1.05}h2{font-size:28px;line-height:1.2;margin-bottom:6px}h3{font-size:16px;margin:28px 0 10px}
+.lead{color:var(--fg2);max-width:62ch;margin:0 0 20px}
+.grid{display:grid;gap:12px}.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.box{border:1px solid var(--pl);border-radius:16px;padding:20px;background:var(--ps)}
+.stage{display:flex;align-items:center;justify-content:center;min-height:150px;border-radius:16px;padding:20px;border:1px solid var(--pl);gap:14px;flex-wrap:wrap}
+.cap{font-size:13px;color:var(--fg2);margin-top:8px}
+.ar{font-family:"IBM Plex Sans Arabic",sans-serif}
+.words{display:flex;align-items:center;gap:12px}.words b{font-size:34px;font-weight:600;letter-spacing:-.03em;line-height:1}.words b i{font-style:normal;opacity:.6}.words .ar{font-size:26px;font-weight:600;line-height:1}
+.sw{border-radius:12px;overflow:hidden;border:1px solid var(--pl);font-size:12px}.sw i{display:block;height:64px}.sw div{padding:8px 10px;background:var(--ps)}.sw b{display:block;font-size:13px}.sw span{color:var(--fg2)}
+.strip{display:grid;grid-template-columns:repeat(10,1fr);border-radius:12px;overflow:hidden}.strip div{padding:34px 4px 6px;font-size:11px;text-align:center}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:start;padding:10px 8px;border-bottom:1px solid var(--pl);vertical-align:top}th{font-weight:600}
+code,.mono{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+pre{background:#103C31;color:#D6EDE3;border-radius:12px;padding:16px;overflow-x:auto;font-size:12.5px;line-height:1.6;margin:0}
+.scroll{overflow-x:auto}
+.sh{height:84px;border-radius:16px;background:#fff;display:flex;align-items:flex-end;padding:10px;font-size:12px;color:#55655F}
+/* demo: always light brand surface */
+.mock{background:#fff;color:var(--ink);border-radius:20px;padding:20px;border:1px solid #DCE5E0;font-family:"IBM Plex Sans",sans-serif}
+.mock[dir=rtl]{font-family:"IBM Plex Sans Arabic",sans-serif}
+.btn{font:inherit;font-weight:600;font-size:15px;min-height:44px;padding:0 20px;border-radius:12px;border:1.5px solid transparent;cursor:pointer}
+.b1{background:var(--e600);color:#fff;box-shadow:var(--sh1)}.b1:hover{background:var(--e700)}
+.b2{background:var(--e50);color:var(--e800)}.b3{background:#fff;color:var(--e700);border-color:var(--e300)}.b4{background:var(--errbg);color:var(--err)}.bd{background:var(--surf2);color:var(--ink3);cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:none;box-shadow:var(--ring)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+textarea,input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid #C3D0CA;border-radius:12px;background:#fff;color:var(--ink)}
+textarea{min-height:84px;resize:vertical}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;line-height:1;padding:6px 10px;border-radius:999px;border:1px solid transparent}
+.badge svg{width:13px;height:13px}
+.k-ok{background:var(--okbg);color:var(--ok);border-color:#BFDDBF}.k-err{background:var(--errbg);color:var(--err);border-color:#F2C4BF}.k-warn{background:var(--warnbg);color:var(--warn);border-color:#EBD08E}.k-info{background:var(--infobg);color:var(--info);border-color:#BCD3EE}.k-care{background:var(--carebg);color:var(--care);border-color:#D8CBEC}.k-gold{background:var(--goldbg);color:var(--gold);border-color:var(--goldline)}.k-neu{background:var(--surf2);color:var(--ink2);border-color:#DCE5E0}.k-brand{background:var(--e50);color:var(--e800);border-color:var(--e200)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:6px}
+.ping{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--err);color:#fff;font-size:11px;font-weight:600;display:inline-grid;place-items:center;border:2px solid #fff}
+.alert{display:flex;gap:10px;padding:12px 14px;border-radius:12px;font-size:14px;border:1px solid;margin:8px 0}
+.card{border:1px solid #DCE5E0;border-radius:16px;padding:16px;box-shadow:var(--sh2);margin-top:12px}
+.card h4{margin:6px 0 4px;font-size:18px;line-height:1.35}.card p{margin:0;color:var(--ink2);font-size:14px}
+.ans{font-family:"Source Serif 4",serif;font-size:17px;line-height:1.7;margin:10px 0 0}
+.mock[dir=rtl] .ans{font-family:"Noto Naskh Arabic",serif;font-size:19px;line-height:2}
+.toast{display:flex;align-items:center;gap:10px;background:var(--e900);color:#fff;border-radius:12px;padding:12px 16px;font-size:14px;box-shadow:var(--sh3)}
+.tog{font:inherit;border:1px solid var(--pl);background:var(--ps);color:var(--fg);border-radius:999px;padding:8px 16px;cursor:pointer;min-height:44px}
+@media (prefers-reduced-motion:no-preference){.btn{transition:background .15s}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="mark" viewBox="0 0 64 64"><path d="M10 52V27C10 17 20 11 32 2C44 11 54 17 54 27V52H38L32 60L26 52Z" fill="var(--bub,#1F7A5E)" stroke="var(--bub,#1F7A5E)" stroke-width="3" stroke-linejoin="round"/><g fill="var(--key,#fff)"><rect x="27.5" y="15.5" width="9" height="9"/><rect x="27.5" y="15.5" width="9" height="9" transform="rotate(45 32 20)"/><path d="M31 47C27 44 21 43.5 16 45V32C21 30.5 27 31.5 31 34.5Z"/><path d="M33 47C37 44 43 43.5 48 45V32C43 30.5 37 31.5 33 34.5Z"/></g></symbol>
+<symbol id="ck" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="ex" viewBox="0 0 16 16"><path d="M8 3v6M8 12.2v.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="hr" viewBox="0 0 16 16"><path d="M8 13.5S2.5 10 2.5 6.2A2.9 2.9 0 0 1 8 5a2.9 2.9 0 0 1 5.5 1.2C13.5 10 8 13.5 8 13.5z" fill="currentColor"/></symbol>
+</svg>
+<main>
+<header>
+<div class="words" style="margin-bottom:28px"><svg width="56" height="56"><use href="#mark"/></svg><span class="ar" style="font-size:30px;font-weight:600">علم</span></div>
+<h1>ilm<i style="font-style:normal;color:var(--e500)">.me</i></h1>
+<p class="lead" style="margin-top:14px;font-size:19px">« Posez votre question à ceux qui savent. Gardez votre nom. »<br><span class="ar" dir="rtl">اسأل أهل العلم، واحتفظ باسمك.</span></p>
+<p class="lead">Identité visuelle complète pour la plateforme de questions anonymes aux experts : nom, logo, couleurs, typographies, ombres, composants et états. Toutes les polices sont libres (OFL), aucune licence à payer.</p>
+</header>
+
+<section>
+<h2>1. Le nom</h2>
+<p class="lead"><b>ilm.me</b> (<span class="ar">علم</span>). <i>Ilm</i> veut dire savoir, science, et le terme est central dans la tradition religieuse : on va vers « ceux qui savent ». Le <b>.me</b> fait partie du nom (« à moi », une question personnelle) et donne l’adresse du site : <b>ilm.me</b>. Trois lettres, une prononciation évidente en français comme en arabe.</p>
+<div class="grid g2">
+<div class="box"><b>Autres pistes avec .me</b><p class="cap" style="margin:6px 0 0"><b>soual.me</b> (<span class="ar">سؤال</span>, « question » à l’algérienne), <b>sakina.me</b> (<span class="ar">سكينة</span>, sérénité), <b>nasiha.me</b> (<span class="ar">نصيحة</span>, le conseil), <b>nour.me</b> (<span class="ar">نور</span>, lumière).</p></div>
+<div class="box"><b>À vérifier avant de valider</b><p class="cap" style="margin:6px 0 0">Je n’ai pas pu vérifier la disponibilité. Les noms de trois lettres en .me sont souvent déjà pris ou vendus au prix fort : contrôle chez un registrar. Vérifie aussi la marque (INAPI) et les noms sur Play Store et App Store. Si ilm.me n’est pas libre, repli sur soual.me.</p></div>
+</div>
+</section>
+
+<section>
+<h2>2. Logo</h2>
+<p class="lead">Une arche de mihrab, la niche qui indique la direction de la prière, dessinée comme une bulle de dialogue : on pose sa question dans un lieu de savoir. Dedans, un livre ouvert et une étoile à huit branches (la lumière de la connaissance). L’arche pointue évoque l’architecture maghrébine. Le symbole est symétrique, donc identique en LTR et en RTL.</p>
+<div class="grid g2">
+<div><div class="stage" style="background:#fff"><div class="words" style="color:#16231E"><svg width="52" height="52"><use href="#mark"/></svg><b>ilm<i>.me</i></b><span class="ar">علم</span></div></div><p class="cap">Principal, sur fond blanc</p></div>
+<div><div class="stage" style="background:#103C31"><div class="words" style="color:#fff"><svg width="52" height="52" style="--bub:#fff;--key:#1F7A5E"><use href="#mark"/></svg><b>ilm<i>.me</i></b><span class="ar">علم</span></div></div><p class="cap">Inversé, sur émeraude profond</p></div>
+<div><div class="stage" style="background:#EEF7F3;gap:28px"><svg width="72" height="72" style="--bub:#16231E"><use href="#mark"/></svg><svg width="72" height="72" style="--bub:#7A8A84"><use href="#mark"/></svg><svg width="32" height="32"><use href="#mark"/></svg><svg width="20" height="20"><use href="#mark"/></svg></div><p class="cap">Monochrome noir, gris, petites tailles (minimum 20 px)</p></div>
+<div><div class="stage" style="background:#F7F9F8;gap:24px"><div style="width:96px;height:96px;border-radius:22%;background:#1F7A5E;display:grid;place-items:center;box-shadow:var(--sh3)"><svg width="62" height="62" style="--bub:#fff;--key:#1F7A5E"><use href="#mark"/></svg></div><div style="width:56px;height:56px;border-radius:50%;background:#1F7A5E;display:grid;place-items:center"><svg width="34" height="34" style="--bub:#fff;--key:#1F7A5E"><use href="#mark"/></svg></div></div><p class="cap">Icône d’app (carré à 22 %) et avatar rond. Zone de protection : la hauteur du trou de serrure autour du symbole.</p></div>
+</div>
+<h3>Wordmark</h3>
+<p class="cap" style="margin-top:0">Latin : « ilm » en IBM Plex Sans 600, minuscules, interlettrage −3 %, suivi de « .me » à 60 % d’opacité. Arabe : علم en IBM Plex Sans Arabic 600. Pas d’effet, pas de dégradé, pas d’ombre sur le logo.</p>
+</section>
+
+<section>
+<h2>3. Couleurs</h2>
+<p class="lead">Le cahier des charges demande un fond blanc pur et un vert émeraude doux. Le vert de marque est légèrement bleuté (teal) pour ne jamais être confondu avec le vert « succès ».</p>
+<h3>Émeraude, couleur de marque</h3>
+<div class="strip" id="brand"></div>
+<p class="cap">Marque = 600 (#1F7A5E, contraste 5,2:1 avec le blanc). Survol 700, pressé 800, fonds teintés 50 et 100.</p>
+<h3>Neutres (légèrement verts)</h3><div class="grid g4" id="neu"></div>
+<h3>Sémantiques</h3>
+<div class="scroll"><table id="sem"><thead><tr><th>Rôle</th><th>Texte / icône</th><th>Fond</th><th>Contraste</th><th>Usage</th></tr></thead><tbody></tbody></table></div>
+<p class="cap">Aucune information ne passe par la couleur seule : chaque état porte aussi une icône ou un libellé. La détresse est violette, jamais rouge : on ne veut pas dramatiser un moment délicat.</p>
+</section>
+
+<section>
+<h2>4. Typographie</h2>
+<div class="grid g2">
+<div class="box"><div style="font-size:40px;font-weight:600;line-height:1.1;letter-spacing:-.02em">Aa IBM Plex Sans</div><p class="cap">Interface, titres, boutons (latin). Poids 400, 500, 600.</p></div>
+<div class="box" dir="rtl"><div class="ar" style="font-size:40px;font-weight:600;line-height:1.5">أب IBM Plex Sans Arabic</div><p class="cap">Interface, titres, boutons (arabe). Mêmes poids, même métrique que le latin.</p></div>
+<div class="box"><div style="font-family:'Source Serif 4',serif;font-size:32px;line-height:1.3">Aa Source Serif 4</div><p class="cap">Texte des réponses d’experts et des billets (latin). Le serif signale la voix de l’expert.</p></div>
+<div class="box" dir="rtl"><div style="font-family:'Noto Naskh Arabic',serif;font-size:36px;line-height:1.7">أب Noto Naskh Arabic</div><p class="cap">Texte des réponses d’experts (arabe), plus classique et plus lisible en long.</p></div>
+</div>
+<h3>Échelle (mobile, en sp)</h3>
+<div class="scroll"><table>
+<thead><tr><th>Style</th><th>Latin</th><th>Arabe</th><th>Usage</th></tr></thead>
+<tr><td>Display</td><td>32 / 40, 600</td><td>34 / 52, 600</td><td>Écran d’accueil, onboarding</td></tr>
+<tr><td>Titre 1</td><td>26 / 34, 600</td><td>28 / 44, 600</td><td>Titre d’écran</td></tr>
+<tr><td>Titre 2</td><td>22 / 30, 600</td><td>24 / 38, 600</td><td>Titre de question</td></tr>
+<tr><td>Titre 3</td><td>18 / 26, 600</td><td>19 / 32, 600</td><td>Titre de carte</td></tr>
+<tr><td>Corps</td><td>16 / 26, 400</td><td>17 / 30, 400</td><td>Texte courant, champs</td></tr>
+<tr><td>Corps réponse</td><td>17 / 29, serif 400</td><td>19 / 38, Naskh 400</td><td>Réponses et billets</td></tr>
+<tr><td>Corps petit</td><td>14 / 22, 400</td><td>15 / 26, 400</td><td>Métadonnées, aides</td></tr>
+<tr><td>Légende</td><td>12 / 18, 500</td><td>13 / 20, 500</td><td>Badges, horodatage</td></tr>
+</table></div>
+<p class="cap">Arabe : jamais d’italique ni de capitales, interlignage plus ouvert, interlettrage à 0. Respecter la taille de texte du système. Longueur de ligne : 45 à 75 caractères.</p>
+</section>
+
+<section>
+<h2>5. Ombres, rayons, espacements</h2>
+<p class="lead">Les ombres sont teintées d’émeraude profond plutôt que de noir : elles restent douces sur fond blanc.</p>
+<div class="grid g4">
+<div class="sh" style="box-shadow:var(--sh1)">sh-1 · repos, champs</div>
+<div class="sh" style="box-shadow:var(--sh2)">sh-2 · cartes</div>
+<div class="sh" style="box-shadow:var(--sh3)">sh-3 · menus, toasts</div>
+<div class="sh" style="box-shadow:var(--sh4)">sh-4 · feuilles modales</div>
+</div>
+<div class="scroll"><table style="margin-top:16px">
+<tr><th>Rayons</th><td>6 pastilles · 12 boutons et champs · 16 cartes · 24 feuilles · 999 badges</td></tr>
+<tr><th>Espacement</th><td>base 4 : 4, 8, 12, 16, 20, 24, 32, 48. Marge d’écran 20. Zone tactile 44 minimum.</td></tr>
+<tr><th>Bordures</th><td>1 px #DCE5E0 (cartes) · 1,5 px #C3D0CA (champs) · focus : anneau blanc 3 + émeraude 2</td></tr>
+<tr><th>Icônes</th><td>Trait 1,75 px, bouts arrondis, 24 px. Les icônes directionnelles (chevron, retour) se mettent en miroir en RTL, pas la lune, l’étoile ni le cœur.</td></tr>
+</table></div>
+</section>
+
+<section>
+<h2>6. Composants</h2>
+<p class="lead">Aperçu en direct, avec bascule français / arabe pour vérifier le sens de lecture.</p>
+<button class="tog" id="tog" type="button">Passer en arabe (RTL)</button>
+<div class="mock" id="demo" dir="ltr" style="margin-top:14px">
+<h3 style="margin-top:0">Boutons</h3>
+<div class="row"><button class="btn b1" data-fr="Poser ma question" data-ar="اطرح سؤالي">Poser ma question</button><button class="btn b2" data-fr="Suivre" data-ar="متابعة">Suivre</button><button class="btn b3" data-fr="Enregistrer" data-ar="حفظ">Enregistrer</button><button class="btn b4" data-fr="Signaler" data-ar="إبلاغ">Signaler</button><button class="btn bd" disabled data-fr="Quota atteint" data-ar="اكتمل الحد">Quota atteint</button></div>
+<h3>Champ</h3>
+<textarea aria-label="Question" data-ph-fr="Écrivez votre question. Évitez noms, lieux et détails qui vous identifient." data-ph-ar="اكتب سؤالك. تجنّب الأسماء والأماكن والتفاصيل التي تكشف هويتك." placeholder="Écrivez votre question. Évitez noms, lieux et détails qui vous identifient."></textarea>
+<h3>Badges</h3>
+<div class="row">
+<span class="badge k-gold"><svg><use href="#ck"/></svg><span data-fr="Diplômes vérifiés" data-ar="شهادات موثّقة">Diplômes vérifiés</span></span>
+<span class="badge k-brand" data-fr="Expert actif" data-ar="خبير نشط">Expert actif</span>
+<span class="badge k-ok"><svg><use href="#ck"/></svg><span data-fr="Répondue" data-ar="تمّت الإجابة">Répondue</span></span>
+<span class="badge k-info" data-fr="En modération" data-ar="قيد المراجعة">En modération</span>
+<span class="badge k-warn" data-fr="Sans réponse" data-ar="بلا إجابة">Sans réponse</span>
+<span class="badge k-err"><svg><use href="#ex"/></svg><span data-fr="Refusée" data-ar="مرفوضة">Refusée</span></span>
+<span class="badge k-care" data-fr="Soutien prioritaire" data-ar="دعم عاجل">Soutien prioritaire</span>
+<span class="badge k-neu" data-fr="Brouillon" data-ar="مسودّة">Brouillon</span>
+</div>
+<h3>Pastilles</h3>
+<div class="row">
+<span><i class="dot" style="background:#2F8F70"></i><span data-fr="Disponible" data-ar="متاح">Disponible</span></span>
+<span><i class="dot" style="background:#B7791F"></i><span data-fr="Quota presque atteint" data-ar="اقترب الحد">Quota presque atteint</span></span>
+<span><i class="dot" style="background:#7A8A84"></i><span data-fr="Absent" data-ar="غائب">Absent</span></span>
+<span class="ping">3</span><span class="badge k-neu" style="padding:6px 8px">128</span>
+<span class="badge k-brand"><svg><use href="#hr"/></svg>42</span>
+</div>
+<h3>Alertes et toast</h3>
+<div class="alert k-ok"><svg width="18" height="18"><use href="#ck"/></svg><span data-fr="Votre question a été approuvée et publiée." data-ar="تمت الموافقة على سؤالك ونشره.">Votre question a été approuvée et publiée.</span></div>
+<div class="alert k-err"><svg width="18" height="18"><use href="#ex"/></svg><span data-fr="Code incorrect. Il vous reste 3 essais." data-ar="الرمز غير صحيح. بقيت لديك 3 محاولات.">Code incorrect. Il vous reste 3 essais.</span></div>
+<div class="alert k-warn"><svg width="18" height="18"><use href="#ex"/></svg><span data-fr="Votre texte contient un numéro de téléphone. Retirez-le pour rester anonyme." data-ar="نصّك يحتوي على رقم هاتف. احذفه لتبقى مجهولاً.">Votre texte contient un numéro de téléphone. Retirez-le pour rester anonyme.</span></div>
+<div class="alert k-care"><svg width="18" height="18"><use href="#hr"/></svg><span data-fr="Vous n’êtes pas seul. Voici des personnes qui peuvent vous écouter." data-ar="لستَ وحدك. هذه جهات يمكنها الاستماع إليك.">Vous n’êtes pas seul. Voici des personnes qui peuvent vous écouter.</span></div>
+<div class="toast"><svg width="16" height="16"><use href="#ck"/></svg><span data-fr="Question envoyée" data-ar="أُرسل السؤال">Question envoyée</span></div>
+<h3>Carte de question et réponse</h3>
+<div class="card">
+<div class="row" style="margin:0"><span class="badge k-brand" data-fr="Famille" data-ar="الأسرة">Famille</span><span class="badge k-ok"><svg><use href="#ck"/></svg><span data-fr="Répondue" data-ar="تمّت الإجابة">Répondue</span></span></div>
+<h4 data-fr="Comment concilier les visites familiales et mon travail ?" data-ar="كيف أوفّق بين زيارة الأهل وعملي؟">Comment concilier les visites familiales et mon travail ?</h4>
+<p data-fr="2 réponses · il y a 3 h" data-ar="إجابتان · قبل 3 ساعات">2 réponses · il y a 3 h</p>
+<p class="ans" data-fr="L’essentiel est de rester constant dans ce que l’on peut tenir, sans se charger de ce qui dépasse ses forces." data-ar="المهم أن تثبت على ما تطيق، من غير أن تحمّل نفسك ما يفوق طاقتها.">L’essentiel est de rester constant dans ce que l’on peut tenir, sans se charger de ce qui dépasse ses forces.</p>
+<div class="row"><span class="badge k-gold"><svg><use href="#ck"/></svg><span data-fr="Diplômes vérifiés" data-ar="شهادات موثّقة">Diplômes vérifiés</span></span><span class="badge k-neu"><svg><use href="#hr"/></svg>18</span></div>
+</div>
+</div>
+</section>
+
+<section>
+<h2>7. Tokens prêts à copier</h2>
+<pre>:root{
+  --brand-50:#EEF7F3; --brand-100:#D6EDE3; --brand-200:#AEDAC8; --brand-300:#80C3A9;
+  --brand-400:#52A98A; --brand-500:#2F8F70; --brand-600:#1F7A5E; --brand-700:#19634D;
+  --brand-800:#154F3F; --brand-900:#103C31;
+  --bg:#FFFFFF; --surface:#F7F9F8; --surface-2:#EEF3F0; --line:#DCE5E0; --line-strong:#C3D0CA;
+  --text:#16231E; --text-2:#55655F; --text-3:#7A8A84; /* text-3 : décoratif seulement */
+  --success:#276B2A; --success-bg:#E8F4E8;  --error:#C0392B; --error-bg:#FCEBE9;
+  --warning:#8A5A00; --warning-bg:#FFF3D6;  --info:#1F5FA8;  --info-bg:#E6EFFA;
+  --care:#6B4FA0;    --care-bg:#F0EBF8;     --verified:#7A5810; --verified-bg:#FBF1D8;
+  --shadow-1:0 1px 2px rgba(16,60,49,.06),0 1px 1px rgba(16,60,49,.04);
+  --shadow-2:0 2px 8px rgba(16,60,49,.08),0 1px 2px rgba(16,60,49,.05);
+  --shadow-3:0 8px 24px rgba(16,60,49,.10),0 2px 6px rgba(16,60,49,.06);
+  --shadow-4:0 20px 48px rgba(16,60,49,.16),0 4px 12px rgba(16,60,49,.08);
+  --radius-sm:6px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px; --radius-pill:999px;
+}</pre>
+</section>
+
+<section>
+<h2>8. Voix et règles</h2>
+<div class="grid g2">
+<div class="box"><b>Ton</b><p class="cap" style="margin:6px 0 0">Calme, simple, respectueux. Phrases courtes, verbes d’action. Jamais de ton moralisateur, jamais d’humour sur le religieux. L’erreur dit ce qui s’est passé et comment corriger, sans s’excuser.</p></div>
+<div class="box"><b>À ne pas faire</b><p class="cap" style="margin:6px 0 0">Pas de calligraphie sacrée (versets, noms divins) ni de personnages dans le logo : le symbole ne doit jamais servir de motif décoratif ou être déformé. Pas de rouge pour la détresse. Pas d’ombre ou de dégradé sur le logo. Pas de bleu ou de vert vif saturé.</p></div>
+</div>
+</section>
+</main>
+<script>
+function L(h){h=h.replace('#','');var c=[0,2,4].map(function(i){var v=parseInt(h.substr(i,2),16)/255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+function CR(a,b){var x=L(a),y=L(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.05))}
+var B=[['50','#EEF7F3'],['100','#D6EDE3'],['200','#AEDAC8'],['300','#80C3A9'],['400','#52A98A'],['500','#2F8F70'],['600','#1F7A5E'],['700','#19634D'],['800','#154F3F'],['900','#103C31']];
+document.getElementById('brand').innerHTML=B.map(function(c){var t=CR(c[1],'#FFFFFF')>CR(c[1],'#16231E')?'#fff':'#16231E';return '<div style="background:'+c[1]+';color:'+t+'"><b>'+c[0]+'</b>'+c[1].toLowerCase()+'</div>'}).join('');
+var N=[['Fond','#FFFFFF','Fond d’écran'],['Surface','#F7F9F8','Zones secondaires'],['Surface 2','#EEF3F0','Champs inactifs'],['Ligne','#DCE5E0','Bordures'],['Ligne forte','#C3D0CA','Champs'],['Texte 3','#7A8A84','Décoratif'],['Texte 2','#55655F','Secondaire'],['Texte','#16231E','Principal']];
+document.getElementById('neu').innerHTML=N.map(function(c){return '<div class="sw"><i style="background:'+c[1]+';border-bottom:1px solid var(--pl)"></i><div><b>'+c[0]+'</b><span>'+c[1]+' · '+c[2]+'</span></div></div>'}).join('');
+var S=[['Succès','#276B2A','#E8F4E8','Validé, approuvé, répondu'],['Erreur','#C0392B','#FCEBE9','Échec, refus, suppression'],['Avertissement','#8A5A00','#FFF3D6','Risque d’identification, quota proche'],['Information','#1F5FA8','#E6EFFA','En modération, aide'],['Soutien (détresse)','#6B4FA0','#F0EBF8','Écran de ressources, cas sensibles'],['Vérifié (or)','#7A5810','#FBF1D8','Badge « Diplômes vérifiés »']];
+document.querySelector('#sem tbody').innerHTML=S.map(function(c){return '<tr><td><b>'+c[0]+'</b></td><td><span class="badge" style="background:'+c[2]+';color:'+c[1]+'">'+c[1]+'</span></td><td><span class="mono">'+c[2]+'</span></td><td>'+CR(c[1],c[2]).toFixed(1).replace('.',',')+':1</td><td>'+c[3]+'</td></tr>'}).join('')+'<tr><td><b>Marque sur blanc</b></td><td><span class="badge" style="background:#fff;color:#1F7A5E;border-color:#DCE5E0">#1F7A5E</span></td><td><span class="mono">#FFFFFF</span></td><td>'+CR('#1F7A5E','#FFFFFF').toFixed(1).replace('.',',')+':1</td><td>Boutons, liens</td></tr>';
+var d=document.getElementById('demo'),t=document.getElementById('tog');
+t.onclick=function(){var ar=d.dir!=='rtl';d.dir=ar?'rtl':'ltr';d.lang=ar?'ar':'fr';t.textContent=ar?'Passer en français (LTR)':'Passer en arabe (RTL)';d.querySelectorAll('[data-fr]').forEach(function(e){e.textContent=e.getAttribute(ar?'data-ar':'data-fr')});d.querySelectorAll('[data-ph-fr]').forEach(function(e){e.placeholder=e.getAttribute(ar?'data-ph-ar':'data-ph-fr')})};
+</script>
+</body>
+</html>

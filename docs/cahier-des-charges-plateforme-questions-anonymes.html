@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cahier des charges – Plateforme de questions anonymes aux experts</title>
+<style>
+:root{
+  --ink:#1c2420; --muted:#5b6762; --line:#d9e0dc; --soft:#f4f7f5;
+  --green:#2f6b4f; --green-d:#1f4a37; --amber:#9a6b12; --amber-bg:#fbf4e3; --red:#9b2c2c;
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:#fff;color:var(--ink);
+  font-family:"Source Serif 4","Georgia","Times New Roman",serif;line-height:1.6}
+main{max-width:860px;margin:0 auto;padding:48px 28px 80px}
+h1,h2,h3,h4,.sans,table,.tag,.box{font-family:"Inter","Segoe UI","Helvetica Neue",Arial,sans-serif}
+h1{font-size:2rem;line-height:1.2;margin:0 0 .4rem;color:var(--green-d)}
+h2{font-size:1.4rem;margin:3rem 0 .8rem;padding-bottom:.35rem;border-bottom:2px solid var(--green);color:var(--green-d)}
+h3{font-size:1.1rem;margin:1.8rem 0 .5rem}
+h4{font-size:.98rem;margin:1.2rem 0 .3rem;color:var(--muted)}
+p{margin:.5rem 0 .8rem;max-width:74ch}
+ul,ol{margin:.3rem 0 1rem;padding-left:1.3rem;max-width:80ch}
+li{margin:.2rem 0}
+table{width:100%;border-collapse:collapse;font-size:.86rem;margin:.8rem 0 1.4rem}
+th,td{border:1px solid var(--line);padding:.45rem .6rem;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600}
+td.c,th.c{text-align:center;white-space:nowrap}
+code{font-family:"JetBrains Mono","Consolas",monospace;font-size:.86em;background:var(--soft);padding:.05rem .3rem;border-radius:3px}
+pre{background:var(--soft);border:1px solid var(--line);padding:.8rem 1rem;overflow-x:auto;font-size:.8rem;line-height:1.45;border-radius:4px}
+pre code{background:none;padding:0}
+.meta{color:var(--muted);font-family:"Inter",sans-serif;font-size:.9rem}
+.box{border-left:4px solid var(--green);background:var(--soft);padding:.7rem 1rem;margin:1rem 0;font-size:.9rem;max-width:80ch}
+.box.warn{border-color:var(--amber);background:var(--amber-bg)}
+.box p{margin:.2rem 0;font-family:inherit}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;padding:.05rem .45rem;border-radius:3px;background:var(--green);color:#fff;white-space:nowrap}
+.tag.o{background:var(--amber)}
+nav.toc{border:1px solid var(--line);padding:1rem 1.4rem;margin:1.6rem 0;font-family:"Inter",sans-serif;font-size:.88rem;columns:2;column-gap:2rem}
+nav.toc a{color:var(--ink);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+nav.toc div{break-inside:avoid;margin:.15rem 0}
+@media (max-width:640px){nav.toc{columns:1}}
+@media print{
+  @page{size:A4;margin:18mm 16mm}
+  main{max-width:none;padding:0}
+  h2{break-after:avoid;page-break-after:avoid}
+  h3,h4{break-after:avoid}
+  table,pre,.box{break-inside:avoid}
+  tr{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+  .pb{break-before:page}
+}
+</style>
+</head>
+<body>
+<main>
+
+<h1>Cahier des charges</h1>
+<p class="sans" style="font-size:1.15rem;margin:0 0 1rem">Plateforme de questions anonymes adressées à des experts religieux (type « Saraha »)</p>
+<p class="meta">Version 1.0 – 26 octobre 2026 – Périmètre complet, livraison en une seule release (pas de MVP)<br>
+Rédigé pour : Lynixis – Statut : à valider (voir §19, décisions ouvertes)</p>
+
+<div class="box warn">
+<p><strong>Ce que ce document suppose.</strong> Marché de départ : Algérie, publics francophone et arabophone. Une équipe réduite (1 à 3 développeurs, 1 à 2 modérateurs au lancement). Les chiffres d'effort et de coût sont des ordres de grandeur à ±30 %, à recalibrer avec tes vitesses réelles ; ils ne sont pas mesurés. Les points juridiques (§12) ne sont pas un avis de juriste et doivent être vérifiés.</p>
+</div>
+
+<nav class="toc">
+<div><a href="#s1">1. Contexte et objectifs</a></div>
+<div><a href="#s2">2. Périmètre</a></div>
+<div><a href="#s3">3. Acteurs et rôles</a></div>
+<div><a href="#s4">4. Modèle d'anonymat</a></div>
+<div><a href="#s5">5. Exigences fonctionnelles</a></div>
+<div><a href="#s6">6. Cycles de vie et workflows</a></div>
+<div><a href="#s7">7. Modération</a></div>
+<div><a href="#s8">8. Modèle de données</a></div>
+<div><a href="#s9">9. Architecture et stack</a></div>
+<div><a href="#s10">10. API</a></div>
+<div><a href="#s11">11. Sécurité</a></div>
+<div><a href="#s12">12. Données personnelles et cadre légal</a></div>
+<div><a href="#s13">13. UX, i18n et RTL</a></div>
+<div><a href="#s14">14. Exigences non fonctionnelles</a></div>
+<div><a href="#s15">15. Exploitation et coûts récurrents</a></div>
+<div><a href="#s16">16. Modèle économique</a></div>
+<div><a href="#s17">17. Planning et charge</a></div>
+<div><a href="#s18">18. Tests et recette</a></div>
+<div><a href="#s19">19. Risques et décisions ouvertes</a></div>
+<div><a href="#s20">20. Glossaire</a></div>
+</nav>
+
+<!-- 1 -->
+<h2 id="s1">1. Contexte et objectifs</h2>
+<h3>1.1 Description</h3>
+<p>Application mobile (Android et iOS) et interface web d'administration permettant à des personnes de poser des questions religieuses, éthiques ou pratiques de façon anonyme, et d'obtenir des réponses d'experts dont les qualifications ont été vérifiées. Une question peut suivre deux voies : être publiée anonymement sur un feed où n'importe quel expert peut répondre, ou être adressée directement à un expert précis.</p>
+<h3>1.2 Objectifs</h3>
+<table>
+<tr><th>Réf.</th><th>Objectif</th><th>Indicateur de réussite</th></tr>
+<tr><td>OBJ-1</td><td>Permettre à un utilisateur de poser une question sans que son identité soit connue des experts ni des autres utilisateurs</td><td>Aucune donnée d'identité exposée par l'API non-admin (test de non-régression automatisé, §18)</td></tr>
+<tr><td>OBJ-2</td><td>Garantir que les experts affichés sont qualifiés</td><td>100 % des experts visibles ont un dossier validé par un modérateur</td></tr>
+<tr><td>OBJ-3</td><td>Réduire les questions en doublon par la recherche</td><td>Taux de questions publiées marquées « doublon » par la modération, suivi mensuel</td></tr>
+<tr><td>OBJ-4</td><td>Maintenir un espace sûr (spam, harcèlement, détresse)</td><td>Délai médian de traitement d'un signalement &lt; 24 h ; cas de détresse &lt; 1 h en horaires couverts</td></tr>
+<tr><td>OBJ-5</td><td>Interface bilingue française et arabe, avec RTL natif</td><td>Tous les écrans testés dans les deux sens, aucune chaîne non traduite</td></tr>
+</table>
+<h3>1.3 Hors objectifs</h3>
+<ul>
+<li>La plateforme ne rend pas de fatwa officielle ; le positionnement éditorial exact reste à valider (§19, D-2).</li>
+<li>Aucune réponse n'est générée par IA sur le fond religieux (§5.12 pour le rôle autorisé de l'IA).</li>
+<li>Pas de messagerie instantanée libre entre utilisateurs et experts.</li>
+</ul>
+
+<!-- 2 -->
+<h2 id="s2">2. Périmètre</h2>
+<p>Le périmètre ci-dessous est livré en une seule release. Rien n'est repoussé à une version ultérieure, à l'exception de la liste « exclu ».</p>
+<h3>2.1 Inclus</h3>
+<ul>
+<li>Applications mobiles Android et iOS (un seul code Flutter).</li>
+<li>Back-office web pour les modérateurs et administrateurs.</li>
+<li>API, base de données, stockage de fichiers, notifications push, e-mail transactionnel.</li>
+<li>Comptes, vérification des experts, questions directes, feed public, réponses, base de connaissances, recherche d'experts et de questions, publications d'experts, likes et abonnements anonymes, signalements, modération, journal d'audit, statistiques.</li>
+<li>Bilingue FR / AR avec RTL.</li>
+</ul>
+<h3>2.2 Exclu</h3>
+<ul>
+<li>Paiement en ligne et rémunération des experts (dépend de la décision D-5, §16).</li>
+<li>Visio ou appel audio.</li>
+<li>Application web grand public (le grand public passe par le mobile).</li>
+<li>Réponses générées par IA.</li>
+<li>Langues autres que français et arabe.</li>
+</ul>
+
+<!-- 3 -->
+<h2 id="s3">3. Acteurs et rôles</h2>
+<table>
+<tr><th>Rôle</th><th>Description</th></tr>
+<tr><td><code>normal_user</code></td><td>Pose des questions, lit les réponses, recherche, suit des experts, like. Identité jamais exposée.</td></tr>
+<tr><td><code>expert</code></td><td>Profil public vérifié. Répond aux questions du feed et aux questions directes, publie des billets. Ne voit jamais l'identité des demandeurs.</td></tr>
+<tr><td><code>moderator</code></td><td>Valide les experts, traite les signalements, modère questions, réponses et billets. Voit le pseudonyme interne, pas l'identité (voir D-1).</td></tr>
+<tr><td><code>admin</code></td><td>Gère les comptes modérateurs, la configuration, les statistiques. Seul rôle pouvant demander une levée d'anonymat, selon la procédure du §4.5.</td></tr>
+</table>
+<p>Le rôle <code>admin</code> n'était pas dans la demande initiale. Je l'ajoute parce qu'il faut un rôle pour créer et révoquer des modérateurs sans toucher à la base. Si tu préfères que ce soit toi seul en accès base, il se supprime sans conséquence sur le reste.</p>
+
+<h3>3.1 Matrice de permissions</h3>
+<table>
+<tr><th>Action</th><th class="c">user</th><th class="c">expert</th><th class="c">modérateur</th><th class="c">admin</th></tr>
+<tr><td>Créer un compte, se connecter</td><td class="c">✔</td><td class="c">✔</td><td class="c">invité</td><td class="c">✔</td></tr>
+<tr><td>Poser une question (feed ou directe)</td><td class="c">✔</td><td class="c">✔ (en tant qu'utilisateur)</td><td class="c">–</td><td class="c">–</td></tr>
+<tr><td>Voir le feed et la base de connaissances</td><td class="c">✔</td><td class="c">✔</td><td class="c">✔</td><td class="c">✔</td></tr>
+<tr><td>Répondre à une question du feed</td><td class="c">–</td><td class="c">✔</td><td class="c">–</td><td class="c">–</td></tr>
+<tr><td>Répondre à une question directe</td><td class="c">–</td><td class="c">✔ (destinataire)</td><td class="c">–</td><td class="c">–</td></tr>
+<tr><td>Publier un billet</td><td class="c">–</td><td class="c">✔</td><td class="c">–</td><td class="c">–</td></tr>
+<tr><td>Liker, suivre un expert</td><td class="c">✔</td><td class="c">✔</td><td class="c">–</td><td class="c">–</td></tr>
+<tr><td>Signaler un contenu</td><td class="c">✔</td><td class="c">✔</td><td class="c">–</td><td class="c">–</td></tr>
+<tr><td>Valider / refuser un dossier expert</td><td class="c">–</td><td class="c">–</td><td class="c">✔</td><td class="c">✔</td></tr>
+<tr><td>Masquer / supprimer un contenu</td><td class="c">–</td><td class="c">son propre contenu</td><td class="c">✔</td><td class="c">✔</td></tr>
+<tr><td>Suspendre un compte</td><td class="c">–</td><td class="c">–</td><td class="c">✔ (temporaire)</td><td class="c">✔</td></tr>
+<tr><td>Créer / révoquer un modérateur</td><td class="c">–</td><td class="c">–</td><td class="c">–</td><td class="c">✔</td></tr>
+<tr><td>Voir le pseudonyme interne d'un demandeur</td><td class="c">–</td><td class="c">–</td><td class="c">✔ (journalisé)</td><td class="c">✔ (journalisé)</td></tr>
+<tr><td>Levée d'anonymat (identité réelle)</td><td class="c">–</td><td class="c">–</td><td class="c">–</td><td class="c">procédure §4.5</td></tr>
+</table>
+
+<!-- 4 -->
+<h2 id="s4">4. Modèle d'anonymat</h2>
+<p>L'anonymat est l'exigence centrale. Elle se conçoit par audience, pas comme un simple masquage de nom.</p>
+<h3>4.1 Qui ne doit pas voir quoi</h3>
+<table>
+<tr><th>Audience</th><th>Ne doit jamais voir</th></tr>
+<tr><td>Autres utilisateurs</td><td>Identité, pseudonyme interne, likes et abonnements d'un utilisateur, lien entre deux questions du même auteur</td></tr>
+<tr><td>Experts</td><td>Identité, pseudonyme interne, ville, appareil, historique de l'auteur, lien entre deux questions du même auteur (sauf fil de suivi explicite, §5.4)</td></tr>
+<tr><td>Modérateurs</td><td>Identité réelle (e-mail, téléphone). Pseudonyme interne autorisé sous journalisation (hypothèse D-1)</td></tr>
+<tr><td>Admin</td><td>Identité réelle, sauf procédure de levée (§4.5)</td></tr>
+</table>
+<h3>4.2 Mécanisme technique</h3>
+<ul>
+<li>Table <code>accounts</code> (e-mail ou téléphone, hash du mot de passe) séparée de la table <code>questions</code>. La question référence un <code>author_alias_id</code>, jamais <code>account_id</code>.</li>
+<li><code>author_alias_id</code> est un identifiant aléatoire (UUID v4) stocké dans une table <code>aliases</code>, liée au compte par une clé accessible uniquement au service d'authentification. Aucun rôle SQL de l'API applicative ne peut faire la jointure <code>aliases → accounts</code>.</li>
+<li>Un alias distinct par question publiée sur le feed est possible (empêche de corréler les questions d'un même auteur) ; un alias stable par compte est nécessaire pour bannir un abuseur. Choix à trancher (D-1) ; recommandation : alias stable par compte, jamais exposé en dehors du back-office.</li>
+<li>Les likes et abonnements sont stockés avec <code>account_id</code> pour fonctionner, mais seuls des compteurs agrégés sont exposés. Les experts voient un nombre d'abonnés, jamais une liste.</li>
+<li>Pas de journal applicatif contenant à la fois l'IP et l'<code>alias_id</code> d'une question.</li>
+</ul>
+<h3>4.3 Fuites par le contenu</h3>
+<p>Le texte d'une question peut identifier son auteur (« mon mari qui travaille à la mairie de… »). Mesures :</p>
+<ul>
+<li>Avertissement permanent au-dessus du champ de saisie.</li>
+<li>Détection automatique avant publication : numéros de téléphone, e-mails, URL, noms propres suivis de fonctions ou lieux précis. En cas de détection, l'utilisateur est invité à reformuler ; il peut forcer l'envoi, la question part alors en pré-modération renforcée.</li>
+<li>Le modérateur peut éditer ou masquer des passages identifiants avant publication.</li>
+</ul>
+<h3>4.4 Fuites par les métadonnées</h3>
+<ul>
+<li>Notifications push : contenu générique (« Vous avez une nouvelle réponse »), jamais le texte de la question ni le nom de l'expert ; les tokens de push ne sont stockés que côté serveur d'authentification.</li>
+<li>Horodatages arrondis à l'heure côté API publique.</li>
+<li>Pas d'envoi de l'IP au front-end ni aux experts ; journaux d'accès réseau conservés 30 jours maximum, sans lien avec l'alias.</li>
+<li>Aucune analytique tierce (SDK publicitaires) dans l'application.</li>
+</ul>
+<h3>4.5 Levée d'anonymat</h3>
+<div class="box warn"><p>Si l'anonymat peut être levé, il faut le dire honnêtement dans la politique de confidentialité. Une promesse d'anonymat absolu que tu ne peux pas tenir face à une réquisition judiciaire est un risque de confiance et juridique.</p></div>
+<ul>
+<li>Cas autorisés (à valider juridiquement) : réquisition judiciaire, menace grave pour une personne, harcèlement caractérisé.</li>
+<li>Procédure : demande écrite d'un modérateur, validation de l'admin, exécution par une action unique journalisée (qui, quand, pourquoi, quelle alias). Aucun accès direct à la base par interface.</li>
+<li>L'utilisateur concerné n'est pas notifié si la loi l'interdit ; sinon il l'est.</li>
+</ul>
+
+<!-- 5 -->
+<h2 id="s5" class="pb">5. Exigences fonctionnelles</h2>
+<p>Priorité : <span class="tag">M</span> obligatoire à la livraison. Il n'y a pas de priorité « plus tard » ; les exigences marquées <span class="tag o">C</span> sont des conditions à valider avant implémentation (dépendent d'une décision ouverte).</p>
+
+<h3>5.1 Comptes et authentification</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-AUTH-1</td><td>Inscription par e-mail ou numéro de téléphone avec vérification (code à 6 chiffres, expiration 10 min).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-AUTH-2</td><td>Connexion, déconnexion, session par jetons d'accès courts (15 min) et jeton de rafraîchissement révocable.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-AUTH-3</td><td>Réinitialisation de mot de passe par code.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-AUTH-4</td><td>L'identifiant de connexion (e-mail/téléphone) n'est jamais affiché dans l'application après inscription.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-AUTH-5</td><td>Suppression de compte : effacement de l'identité ; les questions publiées restent mais l'alias est désassocié définitivement du compte.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-AUTH-6</td><td>Limitation : 5 tentatives de connexion par 15 min et par compte, envoi de code limité par numéro et par IP.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-AUTH-7</td><td>Option de verrouillage de l'application par biométrie ou code local.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-AUTH-8</td><td>Comptes expert : inscription comme utilisateur puis demande de passage expert (§5.3). Comptes modérateur et admin : créés par un admin uniquement, 2FA obligatoire.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.2 Profil utilisateur</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-USR-1</td><td>Langue de l'interface (FR/AR), modifiable à tout moment, par défaut celle du téléphone.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-USR-2</td><td>Aucun nom, aucune photo, aucun champ de profil public. Pseudonyme d'affichage facultatif, non unique, visible uniquement de l'utilisateur lui-même.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-USR-3</td><td>Historique de ses questions avec statut : brouillon, en modération, publiée, en attente de réponse, répondue, refusée (avec motif).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-USR-4</td><td>Liste des experts suivis, favoris, questions sauvegardées (visibles de lui seul).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-USR-5</td><td>Préférences de notification par catégorie.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-USR-6</td><td>Export de ses données personnelles (compte, questions, interactions) sur demande.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.3 Profil expert et vérification</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-EXP-1</td><td>Demande de statut expert : nom réel, photo, biographie (FR et/ou AR), spécialités (liste contrôlée : fiqh, hadith, aqida, finance islamique, famille, etc.), ville, langues parlées, parcours académique, pièces justificatives (diplômes, ijaza, attestation d'institution), lien éventuel vers une affiliation.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-EXP-2</td><td>Statuts du dossier : brouillon, soumis, en examen, complément demandé, validé, refusé (motif), suspendu, révoqué.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-EXP-3</td><td>Les pièces justificatives sont visibles uniquement des modérateurs et de l'expert ; jamais publiques. Un badge « Diplômes vérifiés » est affiché publiquement avec la liste des intitulés validés, sans le scan.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-EXP-4</td><td>Critères de validation écrits et publiés (liste des diplômes et institutions acceptés, procédure pour les cas hors liste).</td><td class="c"><span class="tag o">C</span> D-3</td></tr>
+<tr><td>F-EXP-5</td><td>Page de profil publique : identité d'expert, biographie, parcours, spécialités, ville, langues, nombre de réponses, nombre d'abonnés, dernières réponses publiées, billets.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-EXP-6</td><td>Paramètres de disponibilité : accepte ou non les questions directes, quota quotidien et hebdomadaire de questions directes, spécialités acceptées, durée d'absence.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-EXP-7</td><td>Modification de profil sensible (nom, diplômes) : repasse en examen ; le reste (biographie, photo) en post-modération.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-EXP-8</td><td>Révocation par modérateur ou admin avec motif ; les réponses passées restent visibles sauf décision de retrait.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.4 Questions directes</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-QD-1</td><td>Depuis le profil d'un expert, bouton « Poser une question » (si l'expert accepte les questions directes et si son quota n'est pas atteint).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-QD-2</td><td>Formulaire : sujet (liste contrôlée), titre court, texte (min. 30, max. 2 000 caractères), langue de la question, case « permettre la publication anonyme de la réponse dans la base de connaissances » (cochée par défaut, modifiable).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-QD-3</td><td>Avant envoi : détection de doublons (§5.8) avec proposition de réponses existantes ; avertissement d'anonymat (§4.3).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-QD-4</td><td>La question passe en modération (§7) avant d'être remise à l'expert. L'expert ne reçoit que le texte, le sujet, la langue et un identifiant technique.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-QD-5</td><td>Actions de l'expert : répondre, décliner (avec motif standard), rediriger vers le feed public (la question devient publique si le demandeur y a consenti à l'envoi, sinon elle reste en attente de son choix).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-QD-6</td><td>Délai de réponse : par défaut 14 jours. À expiration, la question est proposée au demandeur pour redirection vers le feed ou annulation (D-6 : valeur du délai).</td><td class="c"><span class="tag o">C</span></td></tr>
+<tr><td>F-QD-7</td><td>Fil de suivi : le demandeur peut poser un nombre limité (2) de questions complémentaires sur une même réponse, reliées via l'identifiant du fil et non via son alias.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-QD-8</td><td>Limite de questions directes par utilisateur : 3 par jour, 10 par semaine (paramétrable).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-QD-9</td><td>Visibilité de la réponse : réservée au demandeur par défaut ; publiée dans la base de connaissances si l'expert et le demandeur y consentent (F-QD-2), après relecture de modération.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.5 Feed public de questions</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-FD-1</td><td>Publication d'une question sur le feed, avec les mêmes champs que F-QD-2 sans le choix d'un expert. Le consentement de publication est implicite.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-FD-2</td><td>Modération avant publication au lancement (D-4) ; la question n'est visible qu'après approbation.</td><td class="c"><span class="tag o">C</span></td></tr>
+<tr><td>F-FD-3</td><td>Affichage : titre, extrait, sujet, langue, nombre de réponses, date arrondie. Aucun élément identifiant l'auteur.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-FD-4</td><td>Filtres : sujet, langue, « sans réponse », « répondues », tri par récence ou pertinence.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-FD-5</td><td>Plusieurs experts peuvent répondre à une même question ; les réponses sont affichées avec le nom et le badge de chaque expert, ordre : récence par défaut, ou « utile » selon les votes (F-INT-3).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-FD-6</td><td>Verrouillage : le demandeur peut clore sa question ; un modérateur peut fermer une question qui dérive.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-FD-7</td><td>Limite : 5 questions publiques par utilisateur par jour (paramétrable).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-FD-8</td><td>Mise en avant des questions sans réponse depuis plus de 72 h dans une file dédiée visible des experts, filtrée par leurs spécialités.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.6 Réponses</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-RE-1</td><td>Éditeur de réponse : texte riche limité (gras, listes, citations), sources structurées (référence coranique, hadith, ouvrage) en champs dédiés, longueur max. 10 000 caractères.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-RE-2</td><td>Mention obligatoire d'une rubrique « Cette réponse est à but éducatif et ne remplace pas une fatwa officielle » si D-2 la retient.</td><td class="c"><span class="tag o">C</span></td></tr>
+<tr><td>F-RE-3</td><td>Réponses des experts en post-modération ; passage en pré-modération automatique pour un expert ayant 2 retraits en 30 jours.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-RE-4</td><td>Modification d'une réponse publiée : historique de versions conservé, mention « modifiée le… » visible.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-RE-5</td><td>Le demandeur peut marquer une réponse « utile » (anonyme) ; compteur public, jamais la liste.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-RE-6</td><td>Détection par le système de réponses d'un même expert contradictoires avec une réponse précédente sur une question similaire : alerte au modérateur (pas de blocage).</td><td class="c"><span class="tag o">C</span> optionnel</td></tr>
+</table>
+
+<h3>5.7 Recherche d'experts</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-SE-1</td><td>Recherche par nom, spécialité, ville / wilaya, langue, institution de formation.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-SE-2</td><td>Filtres cumulatifs ; tri par pertinence, nombre de réponses, disponibilité.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-SE-3</td><td>Les experts suspendus ou ne recevant plus de questions directes restent consultables mais sans bouton de question directe.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3 id="s5-8">5.8 Recherche de questions et base de connaissances</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-KB-1</td><td>Recherche plein texte et sémantique dans les questions publiées et leurs réponses.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-KB-2</td><td>Normalisation de l'arabe : suppression des diacritiques, unification des variantes de lettres (ا أ إ آ ; ى ي ; ة ه), gestion des préfixes courants.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-KB-3</td><td>Gestion de la darija et de l'arabizi : au minimum, une question saisie en lettres latines est retrouvée par la recherche sémantique ; la translittération explicite n'est pas garantie.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-KB-4</td><td>Recherche inter-langue : une question en français retrouve une réponse équivalente en arabe, via des embeddings multilingues.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-KB-5</td><td>Détection de doublons avant publication : suggestion des 3 questions les plus proches avec leur réponse ; l'utilisateur peut quand même publier.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-KB-6</td><td>Un modérateur peut fusionner deux questions en doublon : les réponses sont regroupées sur la question de référence.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-KB-7</td><td>Catégorisation par sujet via une taxonomie administrée (arbre à 2 niveaux), éditable par un admin.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.9 Publications des experts</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-PUB-1</td><td>Création d'un billet : titre, texte (max. 5 000 caractères), image facultative (max. 2 Mo), sujet, langue.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-PUB-2</td><td>Post-modération ; pré-modération pour un expert dont un billet a été retiré dans les 30 derniers jours.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-PUB-3</td><td>Fil « Pour moi » : billets des experts suivis, puis billets recommandés par sujet et langue. Pas de classement algorithmique opaque : tri chronologique avec filtre.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-PUB-4</td><td>Pas de commentaires publics libres sur les billets (modération trop coûteuse, risque de harcèlement). Interaction : like anonyme et « utile ». Si tu veux des commentaires, c'est une décision à part (D-7).</td><td class="c"><span class="tag o">C</span></td></tr>
+<tr><td>F-PUB-5</td><td>Un expert peut modifier ou supprimer son billet ; l'historique reste accessible à la modération.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.10 Interactions anonymes</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-INT-1</td><td>Like sur billet et sur réponse : compteur public, jamais la liste des auteurs de likes.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-INT-2</td><td>Abonnement à un expert : l'expert voit un total d'abonnés, jamais leur identité ni leur alias.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-INT-3</td><td>Vote « utile » sur une réponse ; un compte, un vote par réponse.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-INT-4</td><td>Anti-manipulation : plafonds de likes par compte et par heure, détection de comptes créés en série.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.11 Notifications</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-NOT-1</td><td>Push et centre de notifications dans l'application : question approuvée ou refusée, nouvelle réponse, billet d'un expert suivi, décision sur dossier expert, question directe reçue (expert).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-NOT-2</td><td>Contenu générique, jamais le texte de la question ni le nom d'un tiers dans le payload (§4.4).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-NOT-3</td><td>Résumé quotidien optionnel par e-mail pour les experts (nombre de questions en attente), sans contenu de question.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-NOT-4</td><td>Rappels aux experts avant expiration d'une question directe (J-3, J-1).</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.12 Usage de l'IA (support uniquement)</h3>
+<ul>
+<li><strong>Autorisé :</strong> embeddings pour doublons et recherche, classification de sujet, pré-tri de modération (spam, insultes, données personnelles, signaux de détresse).</li>
+<li><strong>Interdit :</strong> générer, reformuler ou « compléter » une réponse religieuse, résumer une réponse d'expert à la place de l'expert.</li>
+<li>Tout verdict IA de modération est une suggestion ; la décision finale est humaine. Les contenus classés « détresse » sont toujours routés vers une file prioritaire humaine.</li>
+<li>Les textes de questions envoyés à un service d'IA externe sont un transfert de données personnelles sensibles (§12). Recommandation : modèles hébergés sur ton propre serveur pour les embeddings et la classification.</li>
+</ul>
+
+<h3>5.13 Signalement</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-SIG-1</td><td>Tout contenu (question, réponse, billet, profil expert) peut être signalé avec un motif : spam, insulte, contenu inapproprié, fausse qualité d'expert, erreur religieuse manifeste, atteinte à la vie privée, détresse, autre.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-SIG-2</td><td>Un signalement est anonyme pour la partie signalée.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-SIG-3</td><td>Masquage automatique provisoire à partir de 3 signalements distincts, en attente de revue (seuil paramétrable).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-SIG-4</td><td>Signalement abusif répété : alerte au modérateur sur le compte signalant.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-SIG-5</td><td>Motif « détresse » : file prioritaire, affichage immédiat d'une page de ressources d'aide à l'utilisateur concerné (§7.4).</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.14 Back-office de modération et administration</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-BO-1</td><td>Files de travail : dossiers experts, questions à modérer, signalements, contenus masqués automatiquement, cas de détresse. Attribution à un modérateur, verrou pendant le traitement.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-BO-2</td><td>Actions : approuver, refuser avec motif standard ou libre, éditer un passage, masquer, supprimer, fusionner, suspendre un compte, redemander des pièces.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-BO-3</td><td>Journal d'audit immuable de toute action de modération et de tout accès à un alias (qui, quoi, quand, motif).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-BO-4</td><td>Gestion des comptes modérateurs : création, révocation, rôles, 2FA obligatoire, journal de connexion.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-BO-5</td><td>Gestion des motifs standard de refus et des messages types, en FR et AR.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-BO-6</td><td>Paramètres : seuils (signalements, quotas, délais), taxonomie, listes de mots à signaler, page de ressources de détresse.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-BO-7</td><td>Tableau de bord : volumes par file, délais de traitement, taux de refus, questions sans réponse, experts actifs, signalements par motif. Aucune statistique ne permet de recouper un utilisateur.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-BO-8</td><td>Interface du back-office en français et en arabe (modérateurs travaillant dans l'une ou l'autre langue).</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<h3>5.15 Divers</h3>
+<table>
+<tr><th>Réf.</th><th>Exigence</th><th class="c">Prio.</th></tr>
+<tr><td>F-DIV-1</td><td>Pages statiques : conditions d'utilisation, politique de confidentialité, charte de la communauté, critères de vérification des experts, aide, contact. En FR et AR.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-DIV-2</td><td>Formulaire de contact / support (utilisateur connecté ou non).</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-DIV-3</td><td>Écran d'intégration (onboarding) expliquant l'anonymat, ses limites (§4.5) et la différence entre feed et question directe.</td><td class="c"><span class="tag">M</span></td></tr>
+<tr><td>F-DIV-4</td><td>Mise à jour forcée de l'application si une version est révoquée pour faille de sécurité.</td><td class="c"><span class="tag">M</span></td></tr>
+</table>
+
+<!-- 6 -->
+<h2 id="s6" class="pb">6. Cycles de vie et workflows</h2>
+<h3>6.1 Question</h3>
+<pre><code>brouillon → soumise → en_moderation ─┬→ refusee (motif, notifie le demandeur)
+                                     └→ approuvee ─┬→ [feed]   publiee → repondue → close
+                                                   └→ [directe] envoyee_expert ─┬→ repondue → close
+                                                                                ├→ declinee → (redirection feed | annulee)
+                                                                                └→ expiree  → (redirection feed | annulee)
+Tout état publié → masquee (signalement / modérateur) → restaurée | supprimée</code></pre>
+<h3>6.2 Dossier expert</h3>
+<pre><code>brouillon → soumis → en_examen ─┬→ complement_demande → soumis
+                                ├→ valide → actif ─┬→ suspendu → actif | revoque
+                                └→ refuse (motif, nouvelle demande possible après 30 jours)</code></pre>
+<h3>6.3 Signalement</h3>
+<pre><code>cree → en_file → en_traitement → ┬→ classe_sans_suite
+                                 ├→ contenu_masque / supprime
+                                 └→ sanction (avertissement | suspension | revocation)
+Détresse : cree → file_prioritaire → traite_humain → (ressources envoyées | escalade §7.4)</code></pre>
+
+<!-- 7 -->
+<h2 id="s7">7. Modération</h2>
+<p>La modération est le poste de coût récurrent principal. Elle fait partie du produit, pas d'une couche ajoutée après coup.</p>
+<h3>7.1 Politique de contenu</h3>
+<ul>
+<li>Interdits : spam, publicité, insultes et harcèlement (envers experts comme utilisateurs), incitation à la haine ou à la violence, contenu sectaire ou de propagande politique, identification de tiers, contenu sexuel explicite, questions-pièges visant à provoquer une polémique.</li>
+<li>Pas interdit : divergence entre experts. Elle est affichée telle quelle.</li>
+<li>Charte écrite, publique, en FR et AR, avec exemples ; les motifs de refus y renvoient.</li>
+</ul>
+<h3>7.2 Dimensionnement (ordre de grandeur)</h3>
+<table>
+<tr><th>Hypothèse de volume</th><th>Questions à modérer / jour</th><th>Temps à 30 s / élément</th><th>+ signalements, dossiers experts</th></tr>
+<tr><td>Lancement (peu d'utilisateurs)</td><td>100</td><td>≈ 50 min</td><td>≈ 1 à 1,5 h</td></tr>
+<tr><td>Croissance moyenne</td><td>500</td><td>≈ 4 h 10</td><td>≈ 5 à 6 h</td></tr>
+<tr><td>Forte croissance</td><td>2 000</td><td>≈ 16 h 40</td><td>≈ 20 h+ (équipe de 3 à 4 personnes)</td></tr>
+</table>
+<p>Le pré-tri automatique (§5.12) réduit le volume réellement lu humainement, mais je ne peux pas chiffrer ce gain sans données réelles. Il faut mesurer le taux de faux négatifs sur les 2 premières semaines avant de s'appuyer dessus.</p>
+<h3>7.3 Modération des experts</h3>
+<ul>
+<li>Vérification à l'entrée (F-EXP-1 à F-EXP-4) puis post-modération des réponses avec passage automatique en pré-modération en cas de retraits répétés (F-RE-3).</li>
+<li>Revue par échantillonnage : un modérateur relit 5 % des réponses publiées par mois.</li>
+<li>Questions religieuses litigieuses : un modérateur n'arbitre pas la valeur théologique d'une réponse. Le motif « erreur manifeste » est traité par un comité d'experts désignés (D-8) ; en attendant, la réponse reste visible avec un avertissement si trois signalements indépendants sont reçus.</li>
+</ul>
+<h3>7.4 Détresse et situations graves</h3>
+<div class="box warn"><p>À rédiger avec un professionnel (psychologue ou association) avant mise en production. Ce qui suit est la structure technique, pas le contenu clinique.</p></div>
+<ul>
+<li>Déclencheurs : détection automatique de mots-clés et de motifs (idées suicidaires, violences conjugales, maltraitance d'enfant, menace), signalement « détresse », jugement du modérateur.</li>
+<li>Réponse immédiate : écran de ressources d'aide locales et numéros d'urgence, affiché à l'auteur de la question ou du signalement, sans publier la question.</li>
+<li>La question n'est pas publiée sur le feed ; elle est routée vers une file humaine prioritaire. Un expert formé (liste restreinte) peut y répondre en privé.</li>
+<li>Protocole d'escalade écrit : qui décide, quand une levée d'anonymat est envisageable (§4.5), qui contacte les services compétents.</li>
+<li>Formation et soutien des modérateurs exposés à ce contenu.</li>
+</ul>
+
+<!-- 8 -->
+<h2 id="s8">8. Modèle de données</h2>
+<p>Base relationnelle PostgreSQL. Les identifiants sont des UUID. Tous les objets ont <code>created_at</code>, <code>updated_at</code>. Vue d'ensemble, hors tables de jointure triviales :</p>
+<table>
+<tr><th>Table</th><th>Champs principaux</th><th>Remarques</th></tr>
+<tr><td><code>accounts</code></td><td>id, role, email_hash/phone_hash (+ valeur chiffrée), password_hash, locale, status, mfa_secret</td><td>Isolée ; accessible seulement par le service d'authentification</td></tr>
+<tr><td><code>aliases</code></td><td>id, account_id (chiffré, clé séparée), created_at</td><td>Aucun accès par le rôle SQL de l'API de contenu</td></tr>
+<tr><td><code>expert_profiles</code></td><td>id, account_id, display_name, photo_url, bio_fr, bio_ar, city, wilaya, languages[], status, accepts_direct, daily_quota, weekly_quota, verified_at</td><td>account_id utilisé pour l'authentification de l'expert, jamais exposé</td></tr>
+<tr><td><code>expert_credentials</code></td><td>id, expert_id, kind, title, institution, year, file_ref, validated_by, validated_at</td><td>file_ref vers stockage privé chiffré</td></tr>
+<tr><td><code>specialties</code>, <code>expert_specialties</code></td><td>id, parent_id, label_fr, label_ar</td><td>Taxonomie à 2 niveaux</td></tr>
+<tr><td><code>questions</code></td><td>id, author_alias_id, kind (feed/direct), target_expert_id, title, body, lang, topic_id, status, publish_answer_consent, thread_id, embedding (vector), moderation_state</td><td>Index GIN plein texte + index vectoriel</td></tr>
+<tr><td><code>answers</code></td><td>id, question_id, expert_id, body, sources (jsonb), status, version, helpful_count</td><td>Table <code>answer_versions</code> pour l'historique</td></tr>
+<tr><td><code>posts</code></td><td>id, expert_id, title, body, image_ref, topic_id, lang, status, like_count</td><td></td></tr>
+<tr><td><code>likes</code>, <code>follows</code>, <code>helpful_votes</code></td><td>account_id, target_id, created_at (unique)</td><td>Jamais exposées ; seuls les compteurs sont lus par l'API publique</td></tr>
+<tr><td><code>reports</code></td><td>id, reporter_account_id, target_type, target_id, reason, status, handled_by, outcome</td><td></td></tr>
+<tr><td><code>moderation_actions</code></td><td>id, moderator_id, target_type, target_id, action, reason, created_at</td><td>Append-only</td></tr>
+<tr><td><code>audit_log</code></td><td>id, actor_id, event, subject_ref, justification, created_at, hash_prev</td><td>Chaîne de hachage pour détecter la falsification</td></tr>
+<tr><td><code>notifications</code>, <code>push_tokens</code></td><td>id, account_id, type, payload_generic, read_at / token, platform</td><td>Tokens isolés avec <code>accounts</code></td></tr>
+<tr><td><code>settings</code></td><td>key, value (jsonb)</td><td>Seuils, quotas, listes de mots</td></tr>
+</table>
+<h3>8.1 Séparation des privilèges SQL</h3>
+<ul>
+<li><code>role_auth</code> : lecture/écriture sur <code>accounts</code>, <code>aliases</code>, <code>push_tokens</code>.</li>
+<li><code>role_content</code> : lecture/écriture sur le contenu ; aucun droit sur <code>accounts</code> ni <code>aliases</code>.</li>
+<li><code>role_admin_reveal</code> : droit de déchiffrement des alias, utilisé uniquement par une fonction de levée journalisée.</li>
+</ul>
+<p>Coût : deux pools de connexions, un service d'authentification distinct (ou un module avec des credentials séparés), et la complexité d'écrire des requêtes sans jointure <code>aliases → accounts</code>. C'est le prix d'un anonymat qui tient techniquement et pas seulement dans l'interface ; je l'estime à environ 8 à 12 j-h d'effort supplémentaire par rapport à un modèle à table unique.</p>
+
+<!-- 9 -->
+<h2 id="s9" class="pb">9. Architecture et stack</h2>
+<h3>9.1 Vue d'ensemble</h3>
+<pre><code>[App Flutter FR/AR] ─┐
+                     ├─ HTTPS ─ [Reverse proxy / WAF] ─┬─ [API contenu]  ── PostgreSQL (+pgvector)
+[Back-office web]  ──┘                                 ├─ [Service auth] ── PostgreSQL (schéma isolé)
+                                                       └─ [Workers] ─ files (Redis) ─ push / e-mail / embeddings / pré-tri
+                                                       Stockage objets chiffré (pièces, images)</code></pre>
+<h3>9.2 Choix proposés et leur coût</h3>
+<table>
+<tr><th>Composant</th><th>Choix proposé</th><th>Coût / contrepartie</th></tr>
+<tr><td>Mobile</td><td>Flutter (Android + iOS)</td><td>Un seul code ; RTL géré par le framework, mais il faut tester chaque écran dans les deux sens, soit environ +20 à 30 % de temps UI. Compte développeur Apple : 99 USD/an ; Google Play : 25 USD une fois.</td></tr>
+<tr><td>Back-office</td><td>Application web (framework de ton choix, p. ex. React ou Vue) avec RTL</td><td>25 à 35 j-h ; peut réutiliser des composants d'admin de tes autres projets.</td></tr>
+<tr><td>API</td><td>Node.js (NestJS/Fastify) ou autre stack que tu maîtrises déjà ; REST + OpenAPI</td><td>Choisir ce que tu produis déjà en production ; le gain d'un changement de stack ne compense pas la courbe d'apprentissage sur un produit à enjeu de sécurité.</td></tr>
+<tr><td>Base</td><td>PostgreSQL 16 avec <code>pgvector</code></td><td>Recherche vectorielle jusqu'à ~100 000 questions sans service dédié. Au-delà, évaluer un moteur de recherche séparé. RAM : prévoir 8 Go pour la base à ce volume.</td></tr>
+<tr><td>Recherche plein texte arabe</td><td>Postgres FTS avec normalisation maison (§5.8) + vecteurs</td><td>Évite d'exploiter Elasticsearch/Meilisearch au départ ; la qualité arabe se mesure sur un jeu de test de ~200 requêtes avant livraison.</td></tr>
+<tr><td>Embeddings</td><td>Modèle multilingue hébergé (p. ex. famille e5 ou bge-m3)</td><td>Sur CPU, quelques dizaines de ms par texte court ; pas de frais par appel, pas de transfert de texte sensible vers un tiers. Un VPS de 4 vCPU suffit à ce volume.</td></tr>
+<tr><td>Files / tâches</td><td>Redis + file de tâches (BullMQ ou équivalent)</td><td>Push, e-mails, calcul d'embeddings, pré-tri.</td></tr>
+<tr><td>Notifications</td><td>Firebase Cloud Messaging (Android) + APNs (iOS)</td><td>FCM est un tiers : payload strictement générique (§4.4).</td></tr>
+<tr><td>E-mail / SMS</td><td>Fournisseur transactionnel (e-mail) ; SMS pour la vérification de téléphone</td><td>SMS en Algérie : coût par message et fiabilité à vérifier auprès de fournisseurs locaux ; prévoir l'e-mail comme voie principale.</td></tr>
+<tr><td>Stockage fichiers</td><td>Stockage objet compatible S3, chiffré, accès par URL signées courtes</td><td>Pièces justificatives en bucket privé distinct des images publiques.</td></tr>
+<tr><td>Hébergement</td><td>VPS (production + préproduction), sauvegardes chiffrées hors site</td><td>Ordre de grandeur : 40 à 100 USD/mois pour la prod initiale (VPS, stockage, sauvegardes), à confirmer selon le fournisseur et l'emplacement (voir §12 sur la localisation des données).</td></tr>
+<tr><td>Supervision</td><td>Journaux centralisés, alertes (disponibilité, erreurs, files)</td><td>Outils auto-hébergés ou gratuits ; à budgéter en temps d'exploitation.</td></tr>
+</table>
+
+<!-- 10 -->
+<h2 id="s10">10. API</h2>
+<p>REST JSON, versionnée (<code>/v1</code>), schéma OpenAPI maintenu, pagination par curseur. Aucune route publique ne renvoie <code>account_id</code> ni <code>alias_id</code>.</p>
+<table>
+<tr><th>Domaine</th><th>Routes principales</th></tr>
+<tr><td>Auth</td><td><code>POST /auth/register</code>, <code>/auth/verify</code>, <code>/auth/login</code>, <code>/auth/refresh</code>, <code>/auth/logout</code>, <code>/auth/password/reset</code>, <code>DELETE /me</code>, <code>GET /me/export</code></td></tr>
+<tr><td>Questions</td><td><code>POST /questions</code> (kind feed|direct), <code>GET /questions</code> (feed, filtres), <code>GET /questions/:id</code>, <code>GET /me/questions</code>, <code>POST /questions/:id/close</code>, <code>POST /questions/:id/redirect</code></td></tr>
+<tr><td>Réponses</td><td><code>POST /questions/:id/answers</code>, <code>PATCH /answers/:id</code>, <code>POST /answers/:id/helpful</code></td></tr>
+<tr><td>Experts</td><td><code>GET /experts</code> (recherche), <code>GET /experts/:id</code>, <code>POST /experts/apply</code>, <code>PATCH /me/expert</code>, <code>GET /me/expert/inbox</code>, <code>POST /experts/:id/follow</code></td></tr>
+<tr><td>Billets</td><td><code>POST /posts</code>, <code>GET /feed/posts</code>, <code>POST /posts/:id/like</code></td></tr>
+<tr><td>Recherche</td><td><code>GET /search?q=&amp;type=questions|experts</code>, <code>POST /questions/similar</code></td></tr>
+<tr><td>Signalement</td><td><code>POST /reports</code></td></tr>
+<tr><td>Notifications</td><td><code>GET /me/notifications</code>, <code>PATCH /me/notification-settings</code>, <code>POST /me/push-token</code></td></tr>
+<tr><td>Back-office</td><td><code>GET /admin/queues/:name</code>, <code>POST /admin/moderation/:id/decision</code>, <code>POST /admin/experts/:id/decision</code>, <code>POST /admin/moderators</code>, <code>GET /admin/audit</code>, <code>GET /admin/stats</code>, <code>POST /admin/alias/:id/reveal</code> (procédure §4.5)</td></tr>
+</table>
+
+<!-- 11 -->
+<h2 id="s11">11. Sécurité</h2>
+<table>
+<tr><th>Réf.</th><th>Exigence</th></tr>
+<tr><td>S-1</td><td>TLS 1.2+ partout ; certificat épinglé dans l'application mobile (coût : gestion de la rotation).</td></tr>
+<tr><td>S-2</td><td>Mots de passe : Argon2id. Jetons d'accès courts, rafraîchissement révocable et lié à l'appareil.</td></tr>
+<tr><td>S-3</td><td>Chiffrement au repos de la base et des sauvegardes ; chiffrement applicatif des champs identifiants (e-mail, téléphone, lien alias → compte) avec clés distinctes et hors base.</td></tr>
+<tr><td>S-4</td><td>2FA obligatoire pour modérateurs et admins ; sessions courtes ; restriction par IP possible pour le back-office.</td></tr>
+<tr><td>S-5</td><td>Contrôle d'accès par rôle vérifié côté serveur sur chaque route ; tests dédiés d'élévation de privilège.</td></tr>
+<tr><td>S-6</td><td>Validation stricte des entrées, protection contre l'injection, XSS (contenu riche limité et assaini), CSRF sur le back-office, limitation de débit sur toutes les routes.</td></tr>
+<tr><td>S-7</td><td>Pièces justificatives : analyse antivirus, types et tailles limités, stockage privé, accès par URL signée de 5 minutes, filigrane facultatif à l'affichage modérateur.</td></tr>
+<tr><td>S-8</td><td>Journal d'audit à chaîne de hachage ; alerte sur tout accès massif à des alias ou pièces.</td></tr>
+<tr><td>S-9</td><td>Sauvegardes quotidiennes chiffrées, test de restauration trimestriel ; RPO 24 h, RTO 4 h (cible).</td></tr>
+<tr><td>S-10</td><td>Test d'intrusion externe avant la mise en production et à chaque évolution majeure du modèle d'anonymat ; coût à prévoir (ordre de grandeur de quelques milliers d'USD selon le prestataire).</td></tr>
+<tr><td>S-11</td><td>Plan de réponse à incident : détection, confinement, information des utilisateurs et de l'autorité compétente dans les délais légaux (§12).</td></tr>
+<tr><td>S-12</td><td>Protection des experts : option de masquer leur numéro et e-mail (jamais affichés), détection de campagnes de harcèlement, possibilité de bloquer l'envoi de questions depuis un alias donné sans connaître l'identité de l'auteur.</td></tr>
+</table>
+
+<!-- 12 -->
+<h2 id="s12">12. Données personnelles et cadre légal</h2>
+<div class="box warn"><p>Cette section liste ce qu'il faut vérifier avec un juriste algérien. Je ne la présente pas comme un avis, et les références exactes (articles, délais, formalités) doivent être confirmées.</p></div>
+<ul>
+<li><strong>Loi n° 18-07 sur la protection des personnes physiques dans le traitement des données à caractère personnel</strong> (et son autorité de contrôle, l'ANPDP) : à vérifier pour déclaration ou autorisation préalable du traitement, consentement, droits d'accès et de rectification, durée de conservation, sous-traitants.</li>
+<li><strong>Données sensibles.</strong> Des questions religieuses révèlent des convictions ; des questions familiales ou de détresse révèlent de la vie privée ou de la santé. Cela relève probablement de catégories sensibles à régime renforcé. Conséquence technique : consentement explicite à l'inscription, minimisation, chiffrement.</li>
+<li><strong>Localisation des données.</strong> Vérifier si le traitement et le stockage hors d'Algérie sont encadrés ou restreints. Cela conditionne le choix de l'hébergeur (§9.2).</li>
+<li><strong>Statut religieux de la plateforme.</strong> Vérifier auprès des autorités compétentes si une activité de diffusion d'avis religieux par une structure privée est encadrée, et quelle terminologie éviter (le mot « fatwa » notamment). Décision D-2.</li>
+<li><strong>Responsabilité de l'éditeur.</strong> Statut d'hébergeur ou d'éditeur de contenu, obligations de retrait, conservation des données d'identification en cas de réquisition (peut entrer en tension avec l'anonymat, §4.5).</li>
+<li><strong>Mineurs.</strong> Âge minimal d'inscription et consentement parental à définir (D-9). Les questions de mineurs sur des sujets sensibles imposent un traitement particulier.</li>
+<li><strong>Vérification des experts.</strong> Les pièces d'identité et diplômes sont des données personnelles : durée de conservation à définir (recommandation : suppression des scans 12 mois après validation, conservation de la décision et du niveau de preuve uniquement).</li>
+<li><strong>Services tiers.</strong> FCM, APNs, e-mail, SMS transfèrent des métadonnées hors du pays ; à mentionner dans la politique de confidentialité.</li>
+</ul>
+
+<!-- 13 -->
+<h2 id="s13">13. UX, i18n et RTL</h2>
+<h3>13.1 Identité visuelle (reprise de la charte validée)</h3>
+<ul>
+<li>Fond blanc pur, surfaces claires aérées, vert émeraude doux en accent, sans saturation excessive.</li>
+<li>Contrastes conformes WCAG AA minimum ; taille de texte réglable et respect des réglages d'accessibilité système.</li>
+</ul>
+<h3>13.2 Langues</h3>
+<ul>
+<li>Deux langues d'interface complètes : français (LTR) et arabe (RTL). L'arabe est 100 % arabe : aucune chaîne française, y compris dans les erreurs, e-mails, notifications et pages légales.</li>
+<li>Typographie arabe dédiée (famille type Noto Naskh / IBM Plex Sans Arabic ou équivalent libre), interlignage adapté, pas de lettrines italiques.</li>
+<li>Nombres : choix entre chiffres occidentaux et arabo-indiens à décider (D-10) ; recommandation : chiffres occidentaux par défaut, option dans les réglages.</li>
+<li>Contenus utilisateur dans leur langue d'origine ; un champ de langue sur chaque question et réponse ; gestion du texte bidirectionnel (citations arabes dans un texte français et inversement, avec isolation des segments).</li>
+<li>Mise en miroir en RTL : navigation, chevrons, icônes directionnelles, barres de progression, ordre des onglets, alignement des champs. Les icônes non directionnelles (lune, étoile, coeur) ne sont pas inversées.</li>
+<li>Gestion de la date : calendrier grégorien par défaut, affichage hégirien optionnel pour les dates religieuses (D-10).</li>
+<li>Toutes les chaînes dans des fichiers de ressources, avec pluriels arabes (6 formes) et masculin/féminin lorsque nécessaire.</li>
+</ul>
+<h3>13.3 Écrans</h3>
+<table>
+<tr><th>Groupe</th><th>Écrans</th></tr>
+<tr><td>Accueil et accès</td><td>Intégration (anonymat et limites), inscription, vérification, connexion, mot de passe oublié</td></tr>
+<tr><td>Utilisateur</td><td>Accueil (feed de questions et fil de billets), poser une question (feed / directe), mes questions, détail question et réponses, recherche d'experts, profil expert, recherche de questions, notifications, réglages, aide</td></tr>
+<tr><td>Expert</td><td>Tableau de bord (boîte de questions directes, file du feed), écran de réponse, mes réponses, créer un billet, mes billets, disponibilité et quotas, mon profil et mes pièces</td></tr>
+<tr><td>Demande d'expert</td><td>Formulaire en étapes, dépôt de pièces, suivi du dossier</td></tr>
+<tr><td>Back-office</td><td>Tableau de bord, files (dossiers, questions, signalements, détresse), détail de contenu avec actions, gestion des experts, comptes modérateurs, paramètres, journal d'audit, statistiques</td></tr>
+</table>
+<p>Total estimé : environ 45 écrans mobiles et 20 écrans de back-office, chacun en deux sens de lecture.</p>
+<h3>13.4 Accessibilité</h3>
+<ul>
+<li>Lecteurs d'écran (TalkBack, VoiceOver) pris en charge en FR et AR.</li>
+<li>Zones tactiles de 44 px minimum, navigation possible sans geste complexe.</li>
+<li>Pas d'information portée par la couleur seule.</li>
+</ul>
+
+<!-- 14 -->
+<h2 id="s14">14. Exigences non fonctionnelles</h2>
+<table>
+<tr><th>Réf.</th><th>Catégorie</th><th>Exigence</th></tr>
+<tr><td>NF-1</td><td>Performance</td><td>Réponse API p95 &lt; 400 ms hors recherche sémantique ; recherche p95 &lt; 1,2 s ; ouverture de l'application à froid &lt; 3 s sur un téléphone d'entrée de gamme.</td></tr>
+<tr><td>NF-2</td><td>Capacité</td><td>Dimensionné pour 50 000 comptes, 5 000 actifs par jour, 2 000 questions par jour en pointe, 200 000 questions et réponses archivées.</td></tr>
+<tr><td>NF-3</td><td>Disponibilité</td><td>99,5 % mensuel hors maintenance planifiée (≈ 3 h 40 d'arrêt tolérées par mois).</td></tr>
+<tr><td>NF-4</td><td>Réseau</td><td>Utilisable sur connexion lente (3G) : pagination légère, images compressées, mode lecture hors ligne des réponses sauvegardées.</td></tr>
+<tr><td>NF-5</td><td>Compatibilité</td><td>Android 8+ ; iOS 15+ ; navigateurs récents pour le back-office.</td></tr>
+<tr><td>NF-6</td><td>Maintenabilité</td><td>Couverture de tests ≥ 70 % sur la logique métier, 100 % sur les règles d'anonymat et de permissions ; déploiement automatisé ; migrations versionnées.</td></tr>
+<tr><td>NF-7</td><td>Observabilité</td><td>Journaux structurés sans donnée d'identité ni texte de question ; métriques techniques et métier (§15).</td></tr>
+<tr><td>NF-8</td><td>Rétention</td><td>Journaux réseau 30 jours ; tokens push supprimés à la déconnexion ; questions refusées supprimées après 90 jours ; scans de pièces selon §12.</td></tr>
+<tr><td>NF-9</td><td>Réversibilité</td><td>Export complet des données du produit possible dans un format ouvert (SQL + fichiers).</td></tr>
+</table>
+
+<!-- 15 -->
+<h2 id="s15">15. Exploitation et coûts récurrents</h2>
+<table>
+<tr><th>Poste</th><th>Ordre de grandeur</th><th>Commentaire</th></tr>
+<tr><td>Infrastructure (prod + préprod + sauvegardes)</td><td>60 à 150 USD/mois</td><td>Dépend de l'hébergeur et de §12</td></tr>
+<tr><td>E-mail transactionnel, SMS</td><td>variable</td><td>SMS : coût unitaire à obtenir de fournisseurs locaux</td></tr>
+<tr><td>Comptes développeur stores</td><td>≈ 99 USD/an + 25 USD une fois</td><td></td></tr>
+<tr><td>Modération</td><td>1 à 4 personnes équivalent temps partiel, selon §7.2</td><td>Poste dominant, de loin</td></tr>
+<tr><td>Support utilisateur</td><td>≈ 0,5 personne au lancement</td><td>Contact et litiges de modération</td></tr>
+<tr><td>Développement continu (correctifs, évolutions, mise à jour OS)</td><td>≈ 15 à 20 % de l'effort initial par an</td><td>Règle empirique, pas une mesure</td></tr>
+<tr><td>Test d'intrusion annuel</td><td>à chiffrer auprès d'un prestataire</td><td></td></tr>
+<tr><td>Juridique, comité d'experts, soutien psychologique des modérateurs</td><td>à chiffrer</td><td>Souvent oublié dans les budgets</td></tr>
+</table>
+<p>Métriques à suivre dès le premier jour : délai de modération par file, taux de refus, taux de doublons détectés vs confirmés, délai médian de première réponse, questions directes expirées, signalements par motif, rétention J7 / J30, charge par expert.</p>
+
+<!-- 16 -->
+<h2 id="s16">16. Modèle économique</h2>
+<p>Le cahier des charges ne tranche pas ; il liste les options et ce que chacune impose au produit (D-5).</p>
+<table>
+<tr><th>Option</th><th>Impact fonctionnel</th><th>Point de vigilance</th></tr>
+<tr><td>Gratuit, financé par dons, mécénat ou institution</td><td>Aucun module de paiement ; page de soutien</td><td>La modération se finance difficilement ainsi ; dépendance à un financeur</td></tr>
+<tr><td>Partenariats (mosquées, universités, associations)</td><td>Badges d'affiliation, comptes d'organisation</td><td>Négociation longue ; risque d'orientation éditoriale</td></tr>
+<tr><td>Abonnement utilisateur (priorité, historique étendu)</td><td>Paiement, droits par palier, facturation, store billing</td><td>Monétiser l'accès à un avis religieux est mal perçu ; commissions des stores ; solutions de paiement locales limitées</td></tr>
+<tr><td>Rémunération des experts</td><td>Paiement, comptabilité, fiscalité</td><td>Incite à répondre vite et beaucoup, au détriment de la qualité</td></tr>
+<tr><td>Publicité</td><td>–</td><td>Déconseillée : incompatible avec la promesse d'anonymat et de sérénité, et risque de ciblage sensible</td></tr>
+</table>
+
+<!-- 17 -->
+<h2 id="s17" class="pb">17. Planning et charge</h2>
+<p>Pas de MVP : une seule release. Les lots ci-dessous organisent le travail ; ils ne sont pas livrés séparément au public. Une bêta fermée avec experts réels est recommandée avant l'ouverture, sans changer le périmètre.</p>
+<h3>17.1 Estimation (jours-homme, ±30 %)</h3>
+<table>
+<tr><th>Lot</th><th>Contenu</th><th class="c">j-h</th></tr>
+<tr><td>L0</td><td>Cadrage, décisions D-1 à D-10, rédaction des critères d'experts, charte de contenu, validation juridique</td><td class="c">15 – 20</td></tr>
+<tr><td>L1</td><td>Architecture, environnements, CI/CD, séparation auth / contenu, chiffrement, journal d'audit</td><td class="c">20 – 25</td></tr>
+<tr><td>L2</td><td>Comptes, authentification, profils utilisateur, suppression et export</td><td class="c">15 – 20</td></tr>
+<tr><td>L3</td><td>Experts : demande, pièces, vérification, profil public, disponibilité et quotas</td><td class="c">20 – 25</td></tr>
+<tr><td>L4</td><td>Questions directes et feed, réponses, versions, fil de suivi, doublons</td><td class="c">30 – 40</td></tr>
+<tr><td>L5</td><td>Recherche (plein texte arabe, embeddings, recherche d'experts, taxonomie)</td><td class="c">20 – 30</td></tr>
+<tr><td>L6</td><td>Billets, likes, abonnements, votes « utile », anti-manipulation</td><td class="c">12 – 18</td></tr>
+<tr><td>L7</td><td>Notifications (push, e-mail), préférences, rappels</td><td class="c">10 – 14</td></tr>
+<tr><td>L8</td><td>Modération : signalements, files, pré-tri automatique, détresse, journal</td><td class="c">25 – 35</td></tr>
+<tr><td>L9</td><td>Back-office web complet (FR/AR)</td><td class="c">25 – 35</td></tr>
+<tr><td>L10</td><td>Application mobile : écrans, navigation, i18n, RTL, accessibilité (le gros de l'effort, transversal aux lots L2 à L8)</td><td class="c">70 – 90</td></tr>
+<tr><td>L11</td><td>Tests (unitaires, intégration, anonymat, charge, E2E mobile FR/AR), correctifs</td><td class="c">25 – 35</td></tr>
+<tr><td>L12</td><td>Test d'intrusion, corrections, publication stores, documentation, formation des modérateurs</td><td class="c">10 – 15</td></tr>
+<tr><td colspan="2"><strong>Total</strong></td><td class="c"><strong>≈ 300 – 400</strong></td></tr>
+</table>
+<p>À 1 développeur, cela représente environ 14 à 18 mois calendaires ; à 3 développeurs en parallèle, environ 6 à 8 mois, hors délais externes (vérification des stores, validations juridiques, recrutement d'experts). Je ne te présente pas ces chiffres comme fiables : ils sont plus élevés que ce que donnerait une application de questions sans contrainte d'anonymat ni de bilinguisme RTL, et la plus grande incertitude est sur L5, L8 et L10.</p>
+<h3>17.2 Parallèle hors développement</h3>
+<ul>
+<li>Recrutement de 10 à 20 experts avant l'ouverture : démarrer dès L0, c'est le goulot réel (voir §19, R-1).</li>
+<li>Recrutement et formation des modérateurs : pendant L8-L9.</li>
+<li>Rédaction des textes légaux et de la charte : L0 puis relecture finale.</li>
+<li>Bêta fermée : 4 à 6 semaines avant l'ouverture, avec experts et utilisateurs invités.</li>
+</ul>
+
+<!-- 18 -->
+<h2 id="s18">18. Tests et recette</h2>
+<table>
+<tr><th>Type</th><th>Contenu</th></tr>
+<tr><td>Anonymat (automatisé, bloquant)</td><td>Pour chaque route et chaque rôle : aucune réponse ne contient <code>account_id</code>, <code>alias_id</code>, e-mail ou téléphone ; aucune requête de <code>role_content</code> ne peut joindre <code>aliases</code> ; payload de push inspectés ; journaux scannés pour détecter fuites.</td></tr>
+<tr><td>Permissions</td><td>Matrice du §3.1 entièrement testée, y compris tentatives d'élévation et d'accès croisé (un expert lisant une question directe destinée à un autre).</td></tr>
+<tr><td>Recherche</td><td>Jeu de ~200 requêtes réelles FR/AR/darija/arabizi avec résultats attendus ; seuil de rappel défini avant livraison.</td></tr>
+<tr><td>Pré-tri de modération</td><td>Jeu annoté de messages (spam, insultes, détresse, données personnelles) ; mesure des faux négatifs, objectif de rappel sur « détresse » à fixer et à atteindre avant d'activer le pré-tri.</td></tr>
+<tr><td>i18n / RTL</td><td>Captures d'écran automatisées de tous les écrans en FR et AR, revue par un locuteur arabe natif ; test des textes bidirectionnels mixtes.</td></tr>
+<tr><td>Charge</td><td>Scénario NF-2 ×2 sur l'infrastructure cible ; test de la file de tâches sous pic.</td></tr>
+<tr><td>Sécurité</td><td>Analyse statique et dépendances à chaque build, test d'intrusion externe, test de restauration des sauvegardes.</td></tr>
+<tr><td>Recette utilisateur</td><td>Bêta fermée : experts réels, utilisateurs invités, modérateurs sur les files ; critères de sortie : aucun défaut bloquant sur anonymat ou permissions, délais de modération mesurés, retours des experts sur la charge.</td></tr>
+<tr><td>Appareils</td><td>Parc minimal : 2 Android d'entrée de gamme, 2 Android récents, 2 iPhone (ancien et récent), tablettes en lecture.</td></tr>
+</table>
+
+<!-- 19 -->
+<h2 id="s19">19. Risques et décisions ouvertes</h2>
+<h3>19.1 Risques</h3>
+<table>
+<tr><th>Réf.</th><th>Risque</th><th>Impact</th><th>Mitigation</th></tr>
+<tr><td>R-1</td><td>Pas assez d'experts crédibles à l'ouverture</td><td>Produit vide, aucune adoption</td><td>Recrutement dès L0 ; bêta fermée ; partenariats (§16)</td></tr>
+<tr><td>R-2</td><td>Saturation des experts (trop de questions directes)</td><td>Abandon, réponses faibles</td><td>Quotas (F-EXP-6, F-QD-8), expiration, redirection feed</td></tr>
+<tr><td>R-3</td><td>Fuite ou réidentification d'utilisateurs</td><td>Perte de confiance, préjudice personnel et légal</td><td>§4, §8.1, §11, test d'intrusion, politique de conservation minimale</td></tr>
+<tr><td>R-4</td><td>Coût de modération supérieur au budget</td><td>Retards de publication, dégradation de qualité</td><td>Mesures dès la bêta, post-modération progressive, pré-tri validé sur données</td></tr>
+<tr><td>R-5</td><td>Cas de détresse mal gérés</td><td>Préjudice grave</td><td>§7.4, partenaire spécialisé, formation, file prioritaire</td></tr>
+<tr><td>R-6</td><td>Contestation du positionnement religieux ou institutionnel</td><td>Blocage, retrait, atteinte à la réputation</td><td>Vérification juridique et institutionnelle (D-2), charte publique des critères d'experts</td></tr>
+<tr><td>R-7</td><td>Harcèlement ou menaces envers des experts</td><td>Départ d'experts</td><td>S-12, signalement, blocage d'alias</td></tr>
+<tr><td>R-8</td><td>Tension anonymat ↔ réquisition légale</td><td>Promesse intenable</td><td>Procédure §4.5, formulation honnête de la politique de confidentialité</td></tr>
+<tr><td>R-9</td><td>Qualité de recherche arabe/darija insuffisante</td><td>Doublons, mauvaise expérience</td><td>Jeu de test (§18), embeddings multilingues, itération avant livraison</td></tr>
+<tr><td>R-10</td><td>Périmètre « sans MVP » : long cycle avant tout retour réel</td><td>Mauvaises hypothèses découvertes tard</td><td>Bêta fermée avec experts réels dès la fin de L4 ; jalons de revue à chaque lot</td></tr>
+</table>
+<p>Sur R-10 : le choix de ne pas faire de MVP est le tien et je l'ai suivi. C'est le risque le plus coûteux de ce cahier des charges : 300 à 400 j-h avant de savoir si les experts répondent et si les utilisateurs posent des questions. La bêta fermée dès L4 ne modifie pas le périmètre final, elle permet seulement de corriger la trajectoire plus tôt.</p>
+<h3>19.2 Décisions ouvertes</h3>
+<table>
+<tr><th>Réf.</th><th>Décision</th><th>Proposition par défaut</th></tr>
+<tr><td>D-1</td><td>Le modérateur voit-il le pseudonyme interne d'un auteur ?</td><td>Oui, alias stable par compte, accès journalisé, jamais l'identité réelle</td></tr>
+<tr><td>D-2</td><td>Positionnement éditorial : « fatwa », « avis éducatif », autre ; mention de décharge</td><td>« Réponses éducatives d'experts », avec mention, sous réserve d'avis juridique</td></tr>
+<tr><td>D-3</td><td>Critères d'acceptation des experts (diplômes, institutions, ijaza, cooptation)</td><td>À écrire avec 2 à 3 personnes de référence ; liste publique</td></tr>
+<tr><td>D-4</td><td>Feed public : pré-modération puis post-modération ?</td><td>Pré-modération au lancement, bascule selon indicateurs</td></tr>
+<tr><td>D-5</td><td>Modèle économique (§16)</td><td>Gratuit avec financement externe, sans pub</td></tr>
+<tr><td>D-6</td><td>Délai d'expiration des questions directes</td><td>14 jours</td></tr>
+<tr><td>D-7</td><td>Commentaires publics sur les billets</td><td>Non</td></tr>
+<tr><td>D-8</td><td>Comité d'experts pour les litiges théologiques</td><td>Oui, 3 à 5 personnes, désignées avant l'ouverture</td></tr>
+<tr><td>D-9</td><td>Âge minimal et traitement des mineurs</td><td>18 ans au lancement, ou 16 ans avec règles à valider juridiquement</td></tr>
+<tr><td>D-10</td><td>Chiffres arabo-indiens et calendrier hégirien</td><td>Chiffres occidentaux par défaut, option dans les réglages</td></tr>
+<tr><td>D-11</td><td>Marché de départ : Algérie seule ou arabophone / francophone élargi</td><td>Algérie ; le reste change cadre légal, dialectes et recrutement</td></tr>
+</table>
+
+<!-- 20 -->
+<h2 id="s20">20. Glossaire</h2>
+<table>
+<tr><th>Terme</th><th>Définition</th></tr>
+<tr><td>Alias</td><td>Identifiant aléatoire représentant un auteur dans le contenu, sans lien accessible vers son compte</td></tr>
+<tr><td>Question directe</td><td>Question adressée à un expert précis</td></tr>
+<tr><td>Feed</td><td>Flux public de questions anonymes auxquelles tout expert peut répondre</td></tr>
+<tr><td>Pré-modération / post-modération</td><td>Revue avant / après publication</td></tr>
+<tr><td>Levée d'anonymat</td><td>Procédure exceptionnelle et journalisée reliant un alias à un compte</td></tr>
+<tr><td>Darija</td><td>Arabe dialectal algérien</td></tr>
+<tr><td>Arabizi</td><td>Arabe écrit en lettres latines et chiffres</td></tr>
+<tr><td>Fatwa</td><td>Avis juridique religieux ; terme à manier avec précaution (D-2)</td></tr>
+<tr><td>Ijaza</td><td>Licence d'enseignement ou de transmission délivrée par un maître</td></tr>
+<tr><td>RTL</td><td>Right-to-left, sens d'écriture de droite à gauche</td></tr>
+<tr><td>RPO / RTO</td><td>Perte de données maximale tolérée / durée de reprise maximale</td></tr>
+<tr><td>j-h</td><td>Jour-homme</td></tr>
+</table>
+
+</main>
+</body>
+</html>
