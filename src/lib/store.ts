@@ -97,6 +97,26 @@ export const INITIAL_THREADS: DirectMessageThread[] = [
       },
     ],
   },
+  {
+    id: 'thread-2',
+    questionId: 'q-4',
+    authorAlias: 'alias-a83f-4882',
+    expertId: 'exp-1',
+    expertName: 'Dr. Abdelhamid Benmansour',
+    expertTitle: 'Docteur en jurisprudence islamique (Fiqh comparé)',
+    title: 'Oubli d\'une prosternation dans la prière',
+    lastMessage: 'J\'étais dans la troisième unité de la prière du Dhohr et j\'ai eu un doute sérieux sur le fait d\'avoir accompli une seule prosternation avant de me relever. Que dois-je faire selon la règle malikite ?',
+    lastMessageAt: '2026-10-25T14:30:00Z',
+    unreadCount: 1,
+    messages: [
+      {
+        id: 'msg-201',
+        sender: 'user',
+        text: 'J\'étais dans la troisième unité de la prière du Dhohr et j\'ai eu un doute sérieux sur le fait d\'avoir accompli une seule prosternation avant de me relever. Que dois-je faire selon la règle malikite ?',
+        createdAt: '2026-10-25T14:30:00Z',
+      },
+    ],
+  },
 ];
 
 export const INITIAL_EXPERTS: ExpertProfile[] = [

@@ -40,6 +40,7 @@ interface AppContextType {
   threads: DirectMessageThread[];
   sendMessageInThread: (threadId: string, text: string) => void;
   sendExpertReply: (threadId: string, text: string) => void;
+  markThreadAsRead: (threadId: string) => void;
   login: (email: string, password?: string) => Promise<boolean>;
   loginWithGoogle: () => Promise<boolean>;
   register: (name: string, email: string, password?: string) => Promise<boolean>;
@@ -110,14 +111,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (savedThreadsStr) {
           const parsed = JSON.parse(savedThreadsStr);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            setThreads(parsed);
+            const mergedThreads = [...parsed];
+            for (const initTh of INITIAL_THREADS) {
+              if (!mergedThreads.some((t) => t.id === initTh.id)) {
+                mergedThreads.push(initTh);
+              }
+            }
+            setThreads(mergedThreads);
           }
         }
         const savedQuestionsStr = localStorage.getItem(STORAGE_KEYS.QUESTIONS);
         if (savedQuestionsStr) {
           const parsed = JSON.parse(savedQuestionsStr);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            setQuestions(parsed);
+            const mergedQuestions = [...parsed];
+            for (const initQ of INITIAL_QUESTIONS) {
+              if (!mergedQuestions.some((q) => q.id === initQ.id)) {
+                mergedQuestions.push(initQ);
+              }
+            }
+            setQuestions(mergedQuestions);
           }
         }
         const savedFollowedStr = localStorage.getItem(STORAGE_KEYS.FOLLOWED);
@@ -210,7 +223,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const sendMessageInThread = (threadId: string, text: string) => {
     if (!text.trim()) return;
-    const isExpert = currentRole === 'expert';
+    const isExpert = currentRole === 'expert' || currentUser?.role === 'expert';
     const sender = isExpert ? ('expert' as const) : ('user' as const);
 
     const newMsg = {
@@ -222,8 +235,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     let targetQuestionId: string | undefined;
 
-    setThreads((prev) =>
-      prev.map((th) => {
+    setThreads((prev) => {
+      const updated = prev.map((th) => {
         if (th.id === threadId) {
           targetQuestionId = th.questionId;
           return {
@@ -231,11 +244,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             messages: [...th.messages, newMsg],
             lastMessage: text.trim(),
             lastMessageAt: new Date().toISOString(),
+            unreadCount: isExpert ? 0 : (th.unreadCount || 0) + 1,
           };
         }
         return th;
-      })
-    );
+      });
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(STORAGE_KEYS.THREADS, JSON.stringify(updated));
+        }
+      } catch (e) {}
+      return updated;
+    });
 
     // If expert replies in the thread, answer the question
     if (isExpert && targetQuestionId) {
@@ -254,8 +274,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     let targetQuestionId: string | undefined;
 
-    setThreads((prev) =>
-      prev.map((th) => {
+    setThreads((prev) => {
+      const updated = prev.map((th) => {
         if (th.id === threadId) {
           targetQuestionId = th.questionId;
           return {
@@ -263,15 +283,36 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             messages: [...th.messages, newMsg],
             lastMessage: text.trim(),
             lastMessageAt: new Date().toISOString(),
+            unreadCount: 0,
           };
         }
         return th;
-      })
-    );
+      });
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(STORAGE_KEYS.THREADS, JSON.stringify(updated));
+        }
+      } catch (e) {}
+      return updated;
+    });
 
     if (targetQuestionId) {
       addAnswer(targetQuestionId, text.trim());
     }
+  };
+
+  const markThreadAsRead = (threadId: string) => {
+    setThreads((prev) => {
+      const updated = prev.map((th) =>
+        th.id === threadId ? { ...th, unreadCount: 0 } : th
+      );
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(STORAGE_KEYS.THREADS, JSON.stringify(updated));
+        }
+      } catch (e) {}
+      return updated;
+    });
   };
 
   const login = async (email: string, password?: string): Promise<boolean> => {
@@ -401,7 +442,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       answers: [],
     };
 
-    setQuestions((prev) => [newQuestion, ...prev]);
+    setQuestions((prev) => {
+      const nextQ = [newQuestion, ...prev];
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(STORAGE_KEYS.QUESTIONS, JSON.stringify(nextQ));
+        }
+      } catch (e) {}
+      return nextQ;
+    });
 
     // Toujours créer un fil de discussion privé dans la messagerie
     if (targetExp) {
@@ -415,7 +464,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         title: data.title,
         lastMessage: data.body,
         lastMessageAt: new Date().toISOString(),
-        unreadCount: 0,
+        unreadCount: 1,
         messages: [
           {
             id: `msg-${Date.now()}`,
@@ -425,7 +474,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           },
         ],
       };
-      setThreads((prev) => [newThread, ...prev]);
+      setThreads((prev) => {
+        const nextTh = [newThread, ...prev];
+        try {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEYS.THREADS, JSON.stringify(nextTh));
+          }
+        } catch (e) {}
+        return nextTh;
+      });
     }
 
     if (isDistress) {
@@ -600,6 +657,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         threads,
         sendMessageInThread,
         sendExpertReply,
+        markThreadAsRead,
         login,
         loginWithGoogle,
         register,

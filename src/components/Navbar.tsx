@@ -65,7 +65,15 @@ export function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const totalUnreadMessages = threads.reduce((acc, th) => acc + th.unreadCount, 0);
+  const userThreads = threads.filter((th) => {
+    if (!currentUser) return false;
+    if (currentRole === 'expert' || currentUser.role === 'expert') {
+      return th.expertId === currentUser.id || th.expertId === 'exp-1';
+    }
+    return th.authorAlias === currentUser.alias || currentUser.email === 'user@ilm.me';
+  });
+
+  const totalUnreadMessages = userThreads.reduce((acc, th) => acc + (th.unreadCount || 0), 0);
 
   const navLinks = [
     { href: '/', label: locale === 'ar' ? 'الأسئلة' : 'Questions', icon: HelpCircle },

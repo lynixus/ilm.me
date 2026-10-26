@@ -30,6 +30,7 @@ export default function MessagerieClient() {
     threads,
     sendMessageInThread,
     sendExpertReply,
+    markThreadAsRead,
     experts,
     questions,
     currentRole,
@@ -82,6 +83,12 @@ export default function MessagerieClient() {
   useEffect(() => {
     scrollToBottom();
   }, [activeThread?.messages, activeThreadId]);
+
+  useEffect(() => {
+    if (activeThread && activeThread.unreadCount > 0) {
+      markThreadAsRead(activeThread.id);
+    }
+  }, [activeThread?.id, activeThread?.unreadCount]);
 
   if (!isAuthReady) {
     return (
@@ -261,6 +268,9 @@ export default function MessagerieClient() {
                       onClick={() => {
                         setActiveThreadId(thread.id);
                         setShowMobileChat(true);
+                        if (thread.unreadCount > 0) {
+                          markThreadAsRead(thread.id);
+                        }
                       }}
                       className={`w-full p-4 text-left transition flex items-start gap-3 cursor-pointer ${
                         isSelected
