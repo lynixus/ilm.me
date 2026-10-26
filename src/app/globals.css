@@ -1,26 +1,205 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Emerald 50-900 (docs/hamsa-identite-visuelle.html) */
+  --brand-50: #EEF7F3;
+  --brand-100: #D6EDE3;
+  --brand-200: #AEDAC8;
+  --brand-300: #80C3A9;
+  --brand-400: #52A98A;
+  --brand-500: #2F8F70;
+  --brand-600: #1F7A5E; /* Marque principale */
+  --brand-700: #19634D; /* Hover */
+  --brand-800: #154F3F; /* Pressé */
+  --brand-900: #103C31; /* Profond */
+
+  /* Aliases pour compatibilité */
+  --e50: var(--brand-50);
+  --e100: var(--brand-100);
+  --e200: var(--brand-200);
+  --e300: var(--brand-300);
+  --e400: var(--brand-400);
+  --e500: var(--brand-500);
+  --e600: var(--brand-600);
+  --e700: var(--brand-700);
+  --e800: var(--brand-800);
+  --e900: var(--brand-900);
+
+  /* Neutres (légèrement verts) */
+  --bg: #FFFFFF;         /* Fond blanc pur obligatoire */
+  --surface: #F7F9F8;    /* Zones secondaires */
+  --surface-2: #EEF3F0;  /* Champs inactifs / tags */
+  --line: #DCE5E0;       /* Bordures cartes */
+  --line-strong: #C3D0CA;/* Bordures champs */
+  --text: #16231E;       /* Texte principal (contraste élevé) */
+  --text-2: #55655F;     /* Texte secondaire */
+  --text-3: #7A8A84;     /* Texte tertiaire / métadonnées */
+
+  --ink: var(--text);
+  --ink2: var(--text-2);
+  --ink3: var(--text-3);
+  --pg: var(--bg);
+  --fg: var(--text);
+  --fg2: var(--text-2);
+  --pl: var(--line);
+  --ps: var(--surface);
+
+  /* Sémantiques strictes */
+  --success: #276B2A;
+  --success-bg: #E8F4E8;
+  --ok: var(--success);
+  --okbg: var(--success-bg);
+
+  --error: #C0392B;
+  --error-bg: #FCEBE9;
+  --err: var(--error);
+  --errbg: var(--error-bg);
+
+  --warning: #8A5A00;
+  --warning-bg: #FFF3D6;
+  --warn: var(--warning);
+  --warnbg: var(--warning-bg);
+
+  --info: #1F5FA8;
+  --info-bg: #E6EFFA;
+
+  --care: #6B4FA0;       /* Détresse toujours violette, jamais rouge */
+  --care-bg: #F0EBF8;
+
+  --verified: #7A5810;   /* Or pour diplômes vérifiés */
+  --verified-bg: #FBF1D8;
+  --gold: var(--verified);
+  --goldbg: var(--verified-bg);
+  --goldline: #E6CF93;
+
+  /* Ombres teintées émeraude profond */
+  --shadow-1: 0 1px 2px rgba(16, 60, 49, 0.06), 0 1px 1px rgba(16, 60, 49, 0.04);
+  --shadow-2: 0 2px 8px rgba(16, 60, 49, 0.08), 0 1px 2px rgba(16, 60, 49, 0.05);
+  --shadow-3: 0 8px 24px rgba(16, 60, 49, 0.10), 0 2px 6px rgba(16, 60, 49, 0.06);
+  --shadow-4: 0 20px 48px rgba(16, 60, 49, 0.16), 0 4px 12px rgba(16, 60, 49, 0.08);
+
+  --sh1: var(--shadow-1);
+  --sh2: var(--shadow-2);
+  --sh3: var(--shadow-3);
+  --sh4: var(--shadow-4);
+
+  --ring: 0 0 0 3px #FFFFFF, 0 0 0 5px #1F7A5E;
+
+  /* Rayons standardisés */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Force clean light brand palette regardless of OS preference */
+html {
+  color-scheme: light;
+  background-color: #FFFFFF;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #FFFFFF;
+  color: #16231E;
+  font-family: var(--font-ibm-plex-sans), system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100vh;
+}
+
+[dir="rtl"] body,
+[dir="rtl"] {
+  font-family: var(--font-ibm-arabic), system-ui, sans-serif;
+}
+
+.font-serif-fr {
+  font-family: var(--font-source-serif), "Source Serif 4", Georgia, serif;
+}
+
+.font-serif-ar {
+  font-family: var(--font-noto-arabic), "Noto Naskh Arabic", serif;
+}
+
+/* Boutons de la charte officielle */
+.btn-primary {
+  background-color: #1F7A5E;
+  color: #FFFFFF !important;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: var(--shadow-1);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-primary:hover {
+  background-color: #19634D;
+}
+.btn-primary:active {
+  background-color: #154F3F;
+}
+
+.btn-secondary {
+  background-color: #EEF7F3;
+  color: #154F3F !important;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+.btn-secondary:hover {
+  background-color: #D6EDE3;
+}
+
+.btn-outline {
+  background-color: #FFFFFF;
+  color: #19634D !important;
+  border: 1.5px solid #80C3A9;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+.btn-outline:hover {
+  background-color: #EEF7F3;
+}
+
+/* Cartes officielles */
+.card-ilm {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE5E0;
+  border-radius: 16px;
+  box-shadow: var(--shadow-1);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-ilm:hover {
+  border-color: #80C3A9;
+  box-shadow: var(--shadow-2);
+}
+
+/* Badges officiels */
+.badge-gold {
+  background-color: #FBF1D8;
+  color: #7A5810;
+  border: 1px solid #E6CF93;
+}
+
+.badge-brand {
+  background-color: #EEF7F3;
+  color: #154F3F;
+  border: 1px solid #AEDAC8;
+}
+
+.badge-ok {
+  background-color: #E8F4E8;
+  color: #276B2A;
+  border: 1px solid #BFDDBF;
+}
+
+.badge-care {
+  background-color: #F0EBF8;
+  color: #6B4FA0;
+  border: 1px solid #D8CBEC;
+}
+
+.badge-warn {
+  background-color: #FFF3D6;
+  color: #8A5A00;
+  border: 1px solid #EBD08E;
 }
